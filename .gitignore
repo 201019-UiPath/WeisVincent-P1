@@ -3,8 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-
 appsettings.json
+Migrations/*
+
 
 # User-specific files
 *.rsuser
@@ -354,3 +355,4 @@ MigrationBackup/
 /SufferShop/appsettings.json
 /SufferShop/SufferShopUI/appsettings.json
 /SufferShop/SufferShopDB/Migrations
+/IceShop/IceShopDB/Migrations
