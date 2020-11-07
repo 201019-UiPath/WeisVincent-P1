@@ -1,0 +1,33 @@
+﻿@model Customer
+@{
+    
+    // When View() is passed a customer as an argument, the @model Customer code casts that argument as the strongly typed Customer model
+    // If you encapsulate 'model Customer' with @* *@, you dynamically type the model, 
+    // and then can access the properties of the model without casting, they're bound when passed
+    ViewData["Title"] = "Home Page";
+    var customer = ViewData["CustomerUsingViewData"] as Customer;
+    //Required Cast to access the ViewData value at the key "Customer" as a Customer, not some dynamic object garbage
+
+    Layout = "_Layout";
+}
+
+<div class="text-center">
+    <h1 class="display-4">IceShop Web App</h1>
+    <p>Customer Name using ViewData: @ViewData["CustomerUsingViewData"]</p>
+    <p>Customer Alias using ViewData: @customer.Address</p>
+    <p>Customer Name but in a bag: @ViewBag.Homie.Id</p>
+    <p>Customer Name but dynamically: @ViewBag.Homie.Name</p>
+    <p>Customer ID but with model binding: @ViewBag.Id</p>
+    <p>Customer Name but with model binding: @ViewBag.Name</p>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+
+@section AdditionalThings{ 
+    <!--This section will be rendered by the RenderSection() method in _Layout.cshtml that looks for this section by name. -->
+    <h3>This header is extra garbage added in the AdditionalThings section.</h3>
+
+}
+
+@await Html.PartialAsync("../Shared/_DateTimePartial.cshtml")
+<partial name="_DateTimePartial" />
