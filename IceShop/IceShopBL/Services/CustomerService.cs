@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit.Sdk;
 
-namespace IceShopBL
+namespace IceShopBL.Services
 {
 
     /// <summary>
@@ -26,12 +26,7 @@ namespace IceShopBL
             this.repo = repo;
         }
 
-        public List<Customer> GetAllCustomers()
-        {
-            List<Customer> getCustomers = repo.GetAllCustomers();
-            Log.Logger.Information("Fetching list of customers...");
-            return getCustomers;
-        }
+        
 
         public void AddCustomerToRepo(Customer newCustomer)
         {
@@ -47,7 +42,14 @@ namespace IceShopBL
                 throw new NullException(possibleExistingCustomer);
             }
 
+        }
 
+
+        public List<Customer> GetAllCustomers()
+        {
+            List<Customer> getCustomers = repo.GetAllCustomers();
+            Log.Logger.Information("Fetching list of customers...");
+            return getCustomers;
         }
 
         public Customer GetCustomerByEmail(string newEmail)

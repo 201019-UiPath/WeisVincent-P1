@@ -4,19 +4,19 @@ using IceShopLib.Validation;
 using Serilog;
 using System;
 
-namespace IceShopBL
+namespace IceShopBL.Services
 {
     /// <summary>
     /// This class handles sign-in and log-in business logic for the IceShop using a repository that implements IRepository.
     /// This is where all authentication requests, sign-ups, and sign-ins are born and die.
     /// </summary>
-    public sealed class StartService
+    public sealed class StartService : IStartService
     {
         private readonly IRepository Repo;
-        private readonly CustomerService customerService;
-        private readonly ManagerService managerService;
+        private readonly ICustomerService customerService;
+        private readonly IManagerService managerService;
 
-        public StartService( IRepository repo)
+        public StartService(IRepository repo)
         {
             Repo = repo;
             customerService = new CustomerService(ref Repo);
@@ -30,7 +30,7 @@ namespace IceShopBL
             managerService = new ManagerService(ref Repo);
         }
 
-        
+
         public bool DoesUserExistWithEmail(string email)
         {
             if (GetUserByEmail(email) != null) return true; else return false;

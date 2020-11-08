@@ -5,13 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace IceShopBL
+namespace IceShopBL.Services
 {
     /// <summary>
     /// This class handles location-specific business logic for the IceShop using a repository that implements IRepository.
     /// This includes updating location inventory and fetching stock items abd order histories.
     /// </summary>
-    public class LocationService
+    public class LocationService : ILocationService
     {
         private readonly IRepository repo;
 
@@ -26,7 +26,7 @@ namespace IceShopBL
             this.repo = repo;
         }
 
-        
+
         public List<Location> GetAllLocations()
         {
             Log.Logger.Information("Retrieving list of locations from the repository..");
@@ -85,7 +85,7 @@ namespace IceShopBL
         }
 
 
-        
+
 
     }
 }

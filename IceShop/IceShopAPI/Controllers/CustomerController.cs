@@ -22,6 +22,23 @@ namespace IceShopAPI.Controllers
             return View();
         }
 
+        [HttpPost("add")]
+        [Consumes("application/json")]
+        public IActionResult AddCustomer(Customer newCustomer)
+        {
+            try
+            {
+                _customerService.AddCustomerToRepo(newCustomer);
+                return CreatedAtAction("AddHero", newCustomer);
+            }
+            catch (Exception)
+            {
+                // TODO: Check if this is the right error code for this.
+                return StatusCode(500);
+            }
+        }
+
+
         [HttpGet("get")]
         [Produces("application/json")]
         public IActionResult GetAllCustomers()
@@ -49,20 +66,8 @@ namespace IceShopAPI.Controllers
             }
         }
 
-        [HttpPost("add")]
-        [Consumes("application/json")]
-        public IActionResult AddCustomer(Customer newCustomer)
-        {
-            try
-            {
-                _customerService.AddCustomerToRepo(newCustomer);
-                return CreatedAtAction("AddHero", newCustomer);
-            } catch (Exception)
-            {
-                // TODO: Check if this is the right error code for this.
-                return StatusCode(500);
-            }
-        }
+        
+
 
 
     }

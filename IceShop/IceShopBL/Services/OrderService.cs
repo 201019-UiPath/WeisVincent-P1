@@ -4,17 +4,17 @@ using Serilog;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace IceShopBL
+namespace IceShopBL.Services
 {
     /// <summary>
     /// This class handles order-specific business logic for the IceShop using a repository that implements IRepository.
     /// This includes logic that happens during the submission of a new order, such as updating inventory and adding a new order entry.
     /// </summary>
-    public class OrderService
+    public class OrderService : IOrderService
     {
         private readonly IRepository Repo;
 
-        public OrderService( IRepository repo)
+        public OrderService(IRepository repo)
         {
             Repo = repo;
         }

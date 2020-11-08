@@ -3,13 +3,13 @@ using IceShopDB.Repos;
 using Serilog;
 using System.Collections.Generic;
 
-namespace IceShopBL
+namespace IceShopBL.Services
 {
     /// <summary>
     /// This class handles manager-specific business logic for the IceShop using a repository that implements IRepository.
     /// This includes adding new managers and getting manager info by email.
     /// </summary>
-    public class ManagerService
+    public class ManagerService : IManagerService
     {
         private readonly IRepository repo;
         public ManagerService(IRepository repo)

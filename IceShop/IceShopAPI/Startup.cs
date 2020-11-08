@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IceShopBL;
+using IceShopBL.Services;
 using IceShopDB;
 using IceShopDB.Repos;
 using IceShopDB.Repos.DBRepos;
@@ -31,12 +32,19 @@ namespace IceShopAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            
+            // TODO: Add session services and implementation
+
             services.AddDbContext<IceShopContext>(options => options.UseNpgsql(Configuration.GetConnectionString("IceShopDB")));
+
             services.AddScoped<IRepository, DBRepo>();
 
             services.AddScoped<ICustomerService, CustomerService>();
-            // TODO: Add services for each service in BL with interfaces..
-
+            services.AddScoped<ILocationService, LocationService>();
+            services.AddScoped<IManagerService, ManagerService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IStartService, StartService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
