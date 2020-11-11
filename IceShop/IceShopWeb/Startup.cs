@@ -31,8 +31,8 @@ namespace IceShopWeb
                 options.Cookie.IsEssential = true;
             });
 
-            // This adds the views alongside the controllers that utilize them, and sets SessionStateTempDataProvider as the means by which 
-            services.AddControllersWithViews().AddSessionStateTempDataProvider();
+            // This adds the views alongside the controllers that utilize them 
+            services.AddControllersWithViews();
 
             #region Attempt to configure identity.
             /*services.Configure<IdentityOptions>(options =>
@@ -96,6 +96,8 @@ namespace IceShopWeb
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
+
                 endpoints.MapControllerRoute(
                     // This maps the default route of the application on opening, like a home page.
                     name: "default",

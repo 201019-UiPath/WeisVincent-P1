@@ -80,6 +80,7 @@ namespace IceShopAPI.Controllers
 
         [HttpPut("update/{customer}")]
         [Consumes("application/json")]
+        [Produces("application/json")]
         public IActionResult UpdateCustomer(Customer customer)
         {
             try

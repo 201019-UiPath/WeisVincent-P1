@@ -25,7 +25,6 @@ namespace IceShopDB.Repos.FileRepos
             throw new NotImplementedException();
         }
 
-        // TODO: Implement this
         public List<Location> GetLocations()
         {
             throw new NotImplementedException();

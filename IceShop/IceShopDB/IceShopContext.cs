@@ -50,7 +50,7 @@ namespace IceShopDB
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            //TODO: Configure modelBuilder to implement model relationships
+            
             /* Needs: Customer to Orders OTM
             Order to Customer OTO
             */

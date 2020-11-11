@@ -12,15 +12,18 @@ namespace IceShopWeb.Controllers
     {
         const string url = "https://localhost:5001/api/";
 
+        private Customer CurrentCustomer;
+
 
         public CustomerController()
         {
-            
+            CurrentCustomer = HttpContext.Session.Get<Customer>("CurrentCustomer");
         }
 
         // Use https://localhost:port/Customer/Index to use this function
         public async Task<IActionResult> Index()
         {
+            // TODO: Check if the customer is logged in before returning this
             return await Task.Factory.StartNew(() => View());
         }
 
@@ -28,6 +31,8 @@ namespace IceShopWeb.Controllers
 
         public async Task<IActionResult> GetAllCustomers()
         {
+
+
             List<Customer> customers = new List<Customer>();
             
             using (var client = new HttpClient())
@@ -47,6 +52,7 @@ namespace IceShopWeb.Controllers
                     {
                         customers.Add(customer);
                     }
+                    customers.Add(CurrentCustomer);
                 }
             }
 
@@ -77,15 +83,10 @@ namespace IceShopWeb.Controllers
                 }
             }
 
-            //var fetchedCustomers = await _repo.GetAllCustomersAsync();
 
             // TODO: What to do here...
             return View();
 
-
-
-            //var customer = await _repo.GetCustomerByEmailAsync(email);
-            //return View(customer);
         }
 
         // This view is to prompt for the information to be added. It's not a submission.

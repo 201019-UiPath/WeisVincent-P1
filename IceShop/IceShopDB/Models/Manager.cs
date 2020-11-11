@@ -3,7 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IceShopDB.Models
 {
-    //TODO: Add XML Documentation on Manager class
+    /// <summary>
+    /// This class represents the manager of a given location, complete with a name, login credentials, and a location Id and navigation property.
+    /// </summary>
     public class Manager : User
     {
 

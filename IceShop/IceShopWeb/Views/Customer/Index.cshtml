@@ -1,0 +1,17 @@
+﻿@model Customer
+@{
+    ViewData["Title"] = "Index";
+    Customer CurrentCustomer = Model;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    // TODO: Populate this view with options for a customer who has just logged in.
+}
+
+
+
+@Html.ActionLink("View Order History", "ViewOrderHistory", "Customer")
+@Html.ActionLink("Place Order", "ViewLocationInventory", "Customer")
+@Html.ActionLink("View Current Cart", "ViewOrderCart", "Customer")
+
+<button asp-action="ViewOrderHistory" asp-controller="Customer">View Order History</button>
+<button asp-action="ViewLocationInventory" asp-controller="Customer">Place Order</button>
+<button asp-action="ViewOrderCart" asp-controller="Customer">View Current Cart</button>

@@ -5,18 +5,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IceShopDB.Models
 {
-    // TODO: Figure out how to make this enum work with the PostgreSQL DB
     public enum ProductType
     {
-        Physical, Cognitive, Emotional, Metaphysical
+        Water, Slush, Soft, Hard
     }
     public class Product
     {
-
-        //TODO: Make constructor for Product.
-
-
-
         public Product(string name, double price, ProductType typeOfProduct, string description)
         {
             Name = name;

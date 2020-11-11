@@ -2,7 +2,10 @@
 
 namespace IceShopDB.Models
 {
-    //TODO: Add XML Documentation on Customer class
+    /// <summary>
+    /// This class represents a Customer, with associated names, login credentials, 
+    /// physical addresses stored as mostly unvalidated strings, and a navigation property that represents a customer's orders.
+    /// </summary>
     public class Customer : User
     {
 

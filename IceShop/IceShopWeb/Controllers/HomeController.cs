@@ -50,15 +50,14 @@ namespace IceShopWeb.Controllers
                     var result = response.Result;
                     if (result.IsSuccessStatusCode)
                     {
-                        var readTask = result.Content.ReadAsAsync<User>();
+                        var readTask = result.Content.ReadAsAsync<Customer>();
                         readTask.Wait();
 
                         var resultCustomer = readTask.Result;
 
                         if (resultCustomer.Password == inputPassword && resultCustomer.Email == inputEmail)
                         {
-                            // TODO: Store customer data so it can be fruitfully reused in the front end.
-                            TempData["customer"] = resultCustomer;
+                            HttpContext.Session.Set<Customer>("CurrentCustomer", resultCustomer);
                             return RedirectToAction("GetAllCustomers", "Customer");
                         } else
                         {

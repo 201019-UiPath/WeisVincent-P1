@@ -8,11 +8,8 @@ namespace IceShopDB.Models
     public class Order : IStorableInRepo
     {
 
-        // TODO: Review constructor for Order class, you left good stuff in it
-
         internal Order(int customerId, int locationId, string address, double Subtotal, double timeOrderWasPlaced)
         {
-            //TODO: How to deal with Order Id
             CustomerId = customerId;
             Address = address;
             LocationId = locationId;

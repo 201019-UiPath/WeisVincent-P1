@@ -26,11 +26,24 @@ namespace IceShopAPI
             Configuration = configuration;
         }
 
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+
+            services.AddCors(options=> {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                    builder => {
+                        builder.WithOrigins(/*TODO: Add specifically permitted origin, the front end*/)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                    }
+                    );
+            
+            });
             services.AddControllers();//.AddXmlSerializerFormatters();
 
             services.AddMvc(options => {
@@ -68,6 +81,8 @@ namespace IceShopAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthorization();
 

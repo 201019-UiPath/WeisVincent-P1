@@ -19,13 +19,13 @@ namespace IceShopDB.Repos.FileRepos
             throw new NotImplementedException();
         }
 
-        // TODO: Implement this
+
         public List<Order> GetCustomerOrderHistory(int CustomerID)
         {
             throw new NotImplementedException();
         }
 
-        // TODO: Implement this
+
         public List<Order> GetAllOrdersForLocation(int locationID)
         {
             throw new NotImplementedException();

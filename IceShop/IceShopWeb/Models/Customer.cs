@@ -7,22 +7,31 @@ namespace IceShopWeb.Models
 {
     public class Customer : User
     {
+
+
+        internal Customer() : base()
+        {
+
+        }
+
         /// <summary>
         /// Constructor for new customers
         /// </summary>
         /// <param name="name"></param>
         /// <param name="email"></param>
         /// <param name="password"></param>
+        public Customer(string name, string email, string password) : base(name, email, password)
+        {
+            //Address = "";
+        }
+
         [JsonConstructor]
         public Customer(string name, string email, string password, string address) : base(name, email, password)
         {
             Address = address;
         }
 
-        public Customer(string name, string email, string password) : base(name, email, password)
-        {
-            //Address = "";
-        }
+        
 
 
         //TODO: Foreign key link to orders?

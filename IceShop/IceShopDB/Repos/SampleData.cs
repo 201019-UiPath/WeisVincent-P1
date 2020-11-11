@@ -22,7 +22,6 @@ namespace IceShopDB.Repos
                 {
                     Id = -2
                 }
-                //TODO: Populate sample customers
             };
         }
 
@@ -30,15 +29,15 @@ namespace IceShopDB.Repos
         {
             return new List<Product>()
             {
-                new Product( "Burning", 20.00, ProductType.Physical, "The sensation of being on fire, usually caused by being on fire.")
+                new Product( "Sonic Ice", 2.00, ProductType.Soft, "The best-tasting ice in all of Sonic. Gotta go fast.")
                 {
                     Id = -1
                 },
-                new Product("Sad Puppy Picture", 8.00, ProductType.Emotional, "They're really cute, actually, if your brain is messed up.")
+                new Product("Tasteless Slushie", 8.00, ProductType.Slush, "The beverage of champions at QuikTrip")
                 {
                     Id = -2
                 },
-                new Product("Spider Infestation", 12.00, ProductType.Metaphysical, "Become Spiders-Man, and become a hive mind of spiders.")
+                new Product("Glacier", 12.00, ProductType.Hard, "Get them now while they still last.")
                 {
                     Id = -3
                 }
@@ -69,10 +68,10 @@ namespace IceShopDB.Repos
                 new Location("Hell","Earth's core, presumably.") {
                     Id = -1,
                 },
-                new Location( "Dirty Sock", "In a laundry hamper") {
+                new Location( "Antarctica", "Santaville.") {
                     Id = -2,
                 },
-                new Location("Phoenix", "1 E Washington St., #230, Phoenix, AZ 85004") {
+                new Location("Freezer", "A good dumping site.") {
                     Id = -3,
 
                 }
@@ -102,7 +101,7 @@ namespace IceShopDB.Repos
                 new Order(sampleCustomers[0].Id, sampleLocations[0].Id, sampleCustomers[0].Address, /*new List<OrderLineItem>() { OrderLineItems[0],OrderLineItems[1] },*/ 23, 1602313200.0) { Id = -1 },
                 new Order(sampleCustomers[1].Id, sampleLocations[1].Id, sampleCustomers[1].Address, /*new List<OrderLineItem>() { OrderLineItems[2],OrderLineItems[3] },*/ 18, 1602658800.0) { Id = -2 },
                 new Order(sampleCustomers[0].Id, sampleLocations[1].Id, sampleCustomers[0].Address, /*new List<OrderLineItem>() { OrderLineItems[4] },*/ 7, 1602226800.0) { Id = -3 },
-                //TODO: Populate sample Orders
+                
             };
         }
 
@@ -117,7 +116,7 @@ namespace IceShopDB.Repos
                 new InventoryLineItem(sampleLocations[1].Id, sampleProducts[1].Id, 3),
                 new InventoryLineItem(sampleLocations[1].Id, sampleProducts[2].Id, 1),
                 new InventoryLineItem(sampleLocations[2].Id, sampleProducts[0].Id, 12),
-                // TODO: Populate sample stock items
+                
             };
         }
 

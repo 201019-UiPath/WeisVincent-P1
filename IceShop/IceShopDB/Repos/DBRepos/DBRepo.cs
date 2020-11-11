@@ -250,7 +250,7 @@ namespace IceShopDB.Repos.DBRepos
 
         public void SetSavePoint()
         {
-            //TODO: Possible set of savepoint for 
+            throw new NotImplementedException();
         }
 
         public void RollbackChanges()
