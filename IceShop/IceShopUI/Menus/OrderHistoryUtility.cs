@@ -1,4 +1,5 @@
 ﻿using IceShopBL;
+using IceShopBL.Services;
 using IceShopDB.Models;
 using IceShopLib;
 using System;
@@ -11,7 +12,7 @@ namespace IceShopUI.Menus
     {
 
         #region Order History methods
-        internal static void ShowOrderHistory(ref List<Order> ordersToBeShown, ref OrderService orderService, bool isIteratedForward)
+        internal static void ShowOrderHistory(ref List<Order> ordersToBeShown, ref IOrderService orderService, bool isIteratedForward)
         {
             if (!isIteratedForward)
             {
@@ -29,7 +30,7 @@ namespace IceShopUI.Menus
         }
 
 
-        internal static void DisplayOrderInformation(Order order, ref OrderService orderService)
+        internal static void DisplayOrderInformation(Order order, ref IOrderService orderService)
         {
             List<OrderLineItem> OrderedProductsInOrder = orderService.GetAllProductsInOrder(order);
 

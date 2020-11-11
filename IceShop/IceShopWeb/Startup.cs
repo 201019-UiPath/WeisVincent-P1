@@ -1,12 +1,11 @@
-using IceShopDB;
-using IceShopDB.Repos;
-using IceShopDB.Repos.DBRepos;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace IceShopWeb
 {
@@ -22,12 +21,53 @@ namespace IceShopWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // This adds the views alongside the controllers that utilize them.
-            services.AddControllersWithViews();
-            services.AddDbContext<IceShopContext>(options => options.UseNpgsql(Configuration.GetConnectionString("IceShopDB")));
-            // This adds a scoped service, meaning that a new one is made and reused within a request made, which means multiple can be used at once by many users.
-            // Think of this as shorthand for, "Hey, ASP.Net. If any of my controllers need an IRepository, use the DBRepo implementation."
-            services.AddScoped<IRepository, DBRepo>();
+
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+            // This adds the views alongside the controllers that utilize them, and sets SessionStateTempDataProvider as the means by which 
+            services.AddControllersWithViews().AddSessionStateTempDataProvider();
+
+            #region Attempt to configure identity.
+            /*services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings.
+                // Very light requirements.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 8;
+                options.Password.RequiredUniqueChars = 1;
+
+                // Lockout settings.
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings.
+                options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+!";
+                options.User.RequireUniqueEmail = false;
+            });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+                options.LoginPath = "/Identity/Account/Login";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.SlidingExpiration = true;
+            });*/
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,7 +88,11 @@ namespace IceShopWeb
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSession();
+
 
             app.UseEndpoints(endpoints =>
             {
@@ -57,12 +101,12 @@ namespace IceShopWeb
                     name: "default",
                     // The id in this pattern has a ? mark to make it optional.
                     // THIS is conventional based routing.
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Login}/{id?}");
 
 
-                endpoints.MapControllerRoute(name: "customer",
+                /*endpoints.MapControllerRoute(name: "customer",
                     pattern: "Customer/{*Index}",
-                    defaults: new { controller = "Customer", action = "Index" });
+                    defaults: new { controller = "Customer", action = "Index" });*/
 
             });
         }

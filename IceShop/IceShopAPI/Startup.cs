@@ -31,12 +31,22 @@ namespace IceShopAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            
+            services.AddControllers();//.AddXmlSerializerFormatters();
+
+            services.AddMvc(options => {
+                options.Filters.Add(new ProducesAttribute("application/json"));
+                options.Filters.Add(new ConsumesAttribute("application/json"));
+                //options.Filters.Add(new ApiControllerAttribute());
+            });
+
             // TODO: Add session services and implementation
 
             services.AddDbContext<IceShopContext>(options => options.UseNpgsql(Configuration.GetConnectionString("IceShopDB")));
 
+
+
+            // This adds a scoped service, meaning that a new one is made and reused within a request made, which means multiple can be used at once by many users.
+            // Think of this as shorthand for, "Hey, ASP.Net. If any of my controllers need an IRepository, use the DBRepo implementation."
             services.AddScoped<IRepository, DBRepo>();
 
             services.AddScoped<ICustomerService, CustomerService>();

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<IceShopDB.Models.Customer>
+﻿@model IEnumerable<IceShopWeb.Models.Customer>
 @{
     ViewData["Title"] = "GetAllCustomers";
     Layout = "_Layout";
@@ -16,9 +16,6 @@
     <table class="table">
         <thead>
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.First().Id);
-                </th>
                 <th>
                     @Html.DisplayNameFor(model => model.First().Name)
                 </th>
@@ -38,7 +35,7 @@
                     // I manually add the customer as a model here, rather than the Model, which is a collection of customers.
                     // I need only one, not a list.
 
-                    //@await Html.PartialAsync($"_CustomerInfoInTableRow", customer);
+                    @await Html.PartialAsync($"_CustomerInfoInTableRow", customer);
                 }
             }
 

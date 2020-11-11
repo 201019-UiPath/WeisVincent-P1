@@ -44,6 +44,11 @@ namespace IceShopBL.Services
             return repo.GetManagerByEmail(newEmail);
         }
 
+        public void UpdateManagerEntry(Manager manager)
+        {
+            repo.UpdateManager(manager);
+            repo.SaveChanges();
+        }
 
     }
 }

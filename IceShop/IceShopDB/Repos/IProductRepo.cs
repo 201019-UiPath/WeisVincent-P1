@@ -21,5 +21,7 @@ namespace IceShopDB.Repos
 
         Task<List<Product>> GetAllProductsAsync();
 
+        void UpdateProduct(Product product);
+
     }
 }

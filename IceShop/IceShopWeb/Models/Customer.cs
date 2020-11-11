@@ -1,31 +1,34 @@
-﻿using System.ComponentModel;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace IceShopWeb.Models
 {
-    public class Customer
+    public class Customer : User
     {
-        [Key]
-        public int Id { get; set; }
+        /// <summary>
+        /// Constructor for new customers
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        [JsonConstructor]
+        public Customer(string name, string email, string password, string address) : base(name, email, password)
+        {
+            Address = address;
+        }
 
-        [Required]
-        [DisplayName("Name")]
-        [DataType(DataType.Text, ErrorMessage = "A user's name should be just text.")]
-        public string Name { get; set; }
-
-        [Required]
-        [DisplayName("Email")]
-        [DataType(DataType.EmailAddress, ErrorMessage = "A user's email should be a proper email address format.")]
-        public string Email { get; set; }
-
-        // TODO: Try using SecureString instead of string for user passwords.
-        [Required]
-        [DisplayName("Password")]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
+        public Customer(string name, string email, string password) : base(name, email, password)
+        {
+            //Address = "";
+        }
 
 
-        [Required]
+        //TODO: Foreign key link to orders?
+        //public List<Order> Orders { get; set; }
+
+        //[Required]
         [DisplayName("Address")]
         [DataType(DataType.Text, ErrorMessage = "A user's address should be just text.")]
         public string Address { get; set; }

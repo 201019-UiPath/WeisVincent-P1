@@ -71,6 +71,12 @@ namespace IceShopDB.Repos.DBRepos
             return customerWithEmail;
         }
 
+        public void UpdateCustomer(Customer customer)
+        {
+            context.Customers.Update(customer);
+        }
+
+
         #endregion
 
 
@@ -120,6 +126,11 @@ namespace IceShopDB.Repos.DBRepos
             }
 
             return managerWithEmail;
+        }
+
+        public void UpdateManager(Manager manager)
+        {
+            context.Managers.Update(manager);
         }
 
         #endregion
@@ -250,6 +261,11 @@ namespace IceShopDB.Repos.DBRepos
         public List<Product> GetAllProducts()
         {
             return context.Products.ToList();
+        }
+
+        public void UpdateProduct(Product product)
+        {
+            context.Products.Update(product);
         }
 
         public Task<List<Product>> GetAllProductsAsync()

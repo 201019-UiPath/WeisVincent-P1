@@ -24,25 +24,6 @@ namespace IceShopBL.Services
             Repo = repo;
         }
 
-        public void UpdateLineItemsInLocationInventory()
-        {
-            Repo.SaveChanges();
-        }
-
-        public void RemoveLineItemsFromLocationInventory(List<InventoryLineItem> inventoryLineItems)
-        {
-            Log.Logger.Information("Removing multiple inventory line items from repository..");
-            Repo.RemoveInventoryLineItemsFromLocation(inventoryLineItems);
-            Repo.SaveChanges();
-        }
-
-        public void RemoveLineItemFromLocationInventory(InventoryLineItem inventoryLineItem)
-        {
-            Log.Logger.Information("Removing inventory line item from repository..");
-            Repo.RemoveInventoryLineItemFromLocation(inventoryLineItem);
-            Repo.SaveChanges();
-        }
-
         public void AddOrderToRepo(Order order)
         {
             Log.Logger.Information("Adding a new order entry to the repository..");

@@ -1,36 +1,80 @@
 ﻿using IceShopWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Diagnostics;
+using System.Net.Http;
 using mvc = IceShopWeb.Models;
 
 namespace IceShopWeb.Controllers
 {
     public class HomeController : Controller
     {
+        const string url = "https://localhost:5001/api/";
+
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
+        
 
-
-        public IActionResult Index(int id = -1, string name = "defaultname")
+        public ViewResult Login()
         {
-
-            ViewBag.id = id;
-            ViewBag.name = name;
-
-
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Login(AuthPack userInput)
+        {
             // Passing viewdata to the Index.cshtml file
-            mvc.Customer customer = new mvc.Customer() { Id = 1, Address = "The Ultimate Customer", Name = "Mr. Customer" };
-            ViewData["CustomerUsingViewData"] = customer;
+            Customer sampleCustomer = new Customer("Sample Name", "sample@email.emailcom", "password", "The Ultimate Customer") { Id = -127 };
+            ViewData["CustomerUsingViewData"] = sampleCustomer;
 
-            ViewBag.Homie = customer;
+            //ViewBag.id = id;
+            //ViewBag.name = name;
+
+            ViewBag.Homie = sampleCustomer;
+
+            if (ModelState.IsValid)
+            {
+                string inputEmail = userInput.Email;
+                string inputPassword = userInput.Password;
+
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var response = client.GetAsync($"customer/get/{inputEmail}");
+                    response.Wait();
+
+                    var result = response.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        var readTask = result.Content.ReadAsAsync<User>();
+                        readTask.Wait();
+
+                        var resultCustomer = readTask.Result;
+
+                        if (resultCustomer.Password == inputPassword && resultCustomer.Email == inputEmail)
+                        {
+                            // TODO: Store customer data so it can be fruitfully reused in the front end.
+                            TempData["customer"] = resultCustomer;
+                            return RedirectToAction("GetAllCustomers", "Customer");
+                        } else
+                        {
+                            return View(userInput);
+                        }
+
+                    }
+
+                    //return RedirectToAction("Index", "Customer");
+
+                }
+
+            }
 
 
-            return View(customer);
+            return View(userInput);
         }
 
         // This following line of code is attribute-based routing.

@@ -1,4 +1,5 @@
 ﻿using IceShopBL;
+using IceShopBL.Services;
 using IceShopDB.Models;
 using IceShopDB.Repos;
 using Serilog;
@@ -13,7 +14,7 @@ namespace IceShopUI.Menus.ManagerMenus
         private readonly Manager currentManager;
         private List<Order> LocationOrders;
 
-        private readonly LocationService LocationService;
+        private readonly ILocationService LocationService;
 
         public ManagerLocationOrderHistoryMenu(Manager currentManager, ref IRepository repo) : base(ref repo)
         {
@@ -70,7 +71,7 @@ namespace IceShopUI.Menus.ManagerMenus
 
             try
             {
-                OrderService orderService = new OrderService(ref Repo);
+                IOrderService orderService = new OrderService(ref Repo);
                 OrderHistoryUtility.ShowOrderHistory(ref sortedOrderList, ref orderService, IsSortOrderForward);
             }
             catch (NullReferenceException e)

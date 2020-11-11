@@ -8,5 +8,7 @@ namespace IceShopBL
         void AddManager(Manager newManager);
         List<Manager> GetAllManagers();
         Manager GetManagerByEmail(string newEmail);
+
+        void UpdateManagerEntry(Manager manager);
     }
 }

@@ -77,5 +77,10 @@ namespace IceShopDB.Repos.FileRepos
         {
             throw new NotImplementedException();
         }
+
+        public void UpdateCustomer(Customer customer)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

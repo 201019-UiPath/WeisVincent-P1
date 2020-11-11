@@ -23,7 +23,7 @@ namespace IceShopBL
         private readonly OrderService OrderService;
         private readonly Customer CurrentCustomer;
         private readonly Location SelectedLocation;
-
+        private readonly ILocationService LocationService;
         public List<StagedLineItem> OrderCart;
 
         public List<InventoryLineItem> SelectedLocationStock;
@@ -34,9 +34,9 @@ namespace IceShopBL
 
             CurrentCustomer = currentCustomer;
             SelectedLocation = selectedLocation;
-
-            LocationService locationService = new LocationService(ref repo);
-            SelectedLocationStock = locationService.GetAllProductsStockedAtLocation(SelectedLocation);
+            
+            LocationService = new LocationService(ref repo);
+            SelectedLocationStock = LocationService.GetAllProductsStockedAtLocation(SelectedLocation);
 
             OrderCart = new List<StagedLineItem>();
         }
@@ -129,7 +129,8 @@ namespace IceShopBL
 
             if (newQuantity < 1)
             {
-                OrderService.RemoveLineItemFromLocationInventory(SelectedLocationStock.Find(ili => ili.ProductId == lineItem.affectedInventoryLineItem.ProductId));
+                LocationService.RemoveInventoryLineItemInRepo(SelectedLocationStock.Find(ili => ili.ProductId == lineItem.affectedInventoryLineItem.ProductId));
+                //OrderService.RemoveLineItemFromLocationInventory(SelectedLocationStock.Find(ili => ili.ProductId == lineItem.affectedInventoryLineItem.ProductId));
                 SelectedLocationStock.Remove(SelectedLocationStock.Find(ili => ili.ProductId == lineItem.affectedInventoryLineItem.ProductId));
             }
             else

@@ -72,5 +72,12 @@ namespace IceShopBL.Services
             return getOrders.Result;
         }
 
+        public void UpdateCustomerEntry(Customer customer)
+        {
+            Log.Logger.Information("Updating info on a customer in the repo...");
+            repo.UpdateCustomer(customer);
+            repo.SaveChanges();
+        }
+
     }
 }

@@ -40,5 +40,7 @@ namespace IceShopDB.Repos
         /// <returns></returns>
         Manager GetManagerByEmail(string email);
 
+        void UpdateManager(Manager manager);
+
     }
 }

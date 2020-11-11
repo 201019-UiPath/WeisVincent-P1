@@ -24,29 +24,6 @@ namespace IceShopBL.Services
             this.repo = repo;
         }
 
-        public void AddProductToStock(Product addedProduct, Location targetLocation)
-        {
-            Log.Logger.Information("Adding a product entry to a location stock..");
-            repo.AddNewProductToStock(addedProduct.Id, targetLocation.Id);
-            repo.SaveChanges();
-        }
-
-        public List<InventoryLineItem> GetAllProductsAtLocation(Location location)
-        {
-            Log.Logger.Information("Retrieving all products available at a location..");
-            return repo.GetAllInventoryLineItemsAtLocationAsync(location.Id).Result;
-        }
-
-        public List<OrderLineItem> GetAllProductsInOrder(Order order)
-        {
-            return repo.GetOrderedProductsInAnOrder(order.Id);
-        }
-
-        public Task<List<OrderLineItem>> GetAllProductsInOrderAsync(Order order)
-        {
-            return repo.GetOrderedProductsInAnOrderAsync(order.Id);
-        }
-
         public List<Product> GetAllProducts()
         {
             Log.Logger.Information("Retrieving all products available from the catalogue..");
@@ -60,5 +37,11 @@ namespace IceShopBL.Services
             repo.SaveChanges();
         }
 
+        public void UpdateProductEntry(Product product)
+        {
+            Log.Logger.Information("Updating info on a product in the store catalogue repository..");
+            repo.UpdateProduct(product);
+            repo.SaveChanges();
+        }
     }
 }

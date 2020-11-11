@@ -39,5 +39,10 @@ namespace IceShopDB.Repos.FileRepos
         {
             throw new NotImplementedException();
         }
+
+        public void UpdateManager(Manager manager)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

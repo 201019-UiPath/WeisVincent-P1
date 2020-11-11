@@ -49,5 +49,7 @@ namespace IceShopDB.Repos
         /// <param name="customerID"></param>
         /// <returns></returns>
         Task<List<Order>> GetAllOrdersForCustomerAsync(int customerID);
+
+        void UpdateCustomer(Customer customer);
     }
 }

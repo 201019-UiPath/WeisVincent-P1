@@ -9,8 +9,6 @@ namespace IceShopBL
         void AddOrderToRepo(Order order);
         List<OrderLineItem> GetAllProductsInOrder(Order order);
         Task<List<OrderLineItem>> GetAllProductsInOrderAsync(Order order);
-        void RemoveLineItemFromLocationInventory(InventoryLineItem inventoryLineItem);
-        void RemoveLineItemsFromLocationInventory(List<InventoryLineItem> inventoryLineItems);
-        void UpdateLineItemsInLocationInventory();
+        
     }
 }

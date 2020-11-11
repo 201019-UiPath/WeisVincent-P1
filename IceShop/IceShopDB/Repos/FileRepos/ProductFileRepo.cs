@@ -48,5 +48,10 @@ namespace IceShopDB.Repos.FileRepos
         {
             throw new NotImplementedException();
         }
+
+        public void UpdateProduct(Product product)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

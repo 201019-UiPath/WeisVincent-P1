@@ -1,8 +1,8 @@
 ﻿@model Customer
 @{
-    
+
     // When View() is passed a customer as an argument, the @model Customer code casts that argument as the strongly typed Customer model
-    // If you encapsulate 'model Customer' with @* *@, you dynamically type the model, 
+    // If you encapsulate 'model Customer' with @* *@, you dynamically type the model,
     // and then can access the properties of the model without casting, they're bound when passed
     ViewData["Title"] = "Home Page";
     var customer = ViewData["CustomerUsingViewData"] as Customer;
@@ -23,7 +23,7 @@
 </div>
 
 
-@section AdditionalThings{ 
+@section AdditionalThings{
     <!--This section will be rendered by the RenderSection() method in _Layout.cshtml that looks for this section by name. -->
     <h3>This header is extra garbage added in the AdditionalThings section.</h3>
 

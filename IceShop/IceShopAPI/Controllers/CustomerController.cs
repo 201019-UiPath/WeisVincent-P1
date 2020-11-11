@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IceShopAPI.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class CustomerController : Controller
     {
         private readonly ICustomerService _customerService;
@@ -17,11 +19,6 @@ namespace IceShopAPI.Controllers
             _customerService = customerService;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [HttpPost("add")]
         [Consumes("application/json")]
         public IActionResult AddCustomer(Customer newCustomer)
@@ -29,7 +26,7 @@ namespace IceShopAPI.Controllers
             try
             {
                 _customerService.AddCustomerToRepo(newCustomer);
-                return CreatedAtAction("AddHero", newCustomer);
+                return CreatedAtAction("AddCustomer", newCustomer);
             }
             catch (Exception)
             {
@@ -66,8 +63,36 @@ namespace IceShopAPI.Controllers
             }
         }
 
-        
 
+        [HttpGet("get/orders/{customer}")]
+        [Produces("application/json")]
+        public IActionResult GetOrders(Customer customer)
+        {
+            try
+            {
+                return Ok(_customerService.GetAllOrdersForCustomer(customer));
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPut("update/{customer}")]
+        [Consumes("application/json")]
+        public IActionResult UpdateCustomer(Customer customer)
+        {
+            try
+            {
+                // TODO: Figure out if updating works statelessly.
+                _customerService.UpdateCustomerEntry(customer);
+                return AcceptedAtAction("UpdateProductEntry", customer);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
 
 
     }

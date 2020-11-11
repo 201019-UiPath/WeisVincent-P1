@@ -3,6 +3,7 @@ using IceShopDB.Repos;
 using IceShopLib.Validation;
 using Serilog;
 using System;
+using System.Threading.Tasks;
 
 namespace IceShopBL.Services
 {
@@ -41,6 +42,37 @@ namespace IceShopBL.Services
             Log.Logger.Information("Retrieving a user by their email by querying both the Customer and Manager collections in the repository..");
             Customer userAsCustomer = customerService.GetCustomerByEmail(email);
             Manager userAsManager = managerService.GetManagerByEmail(email);
+            if (userAsCustomer == null)
+            {
+                if (userAsManager == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return userAsManager;
+                }
+            }
+            else
+            {
+                return userAsCustomer;
+            }
+
+        }
+
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            Log.Logger.Information("Retrieving a user by their email by querying both the Customer and Manager collections in the repository..");
+            
+            Task<Customer> getUserAsCustomer = Task<Customer>.Factory.StartNew(
+                () => customerService.GetCustomerByEmail(email)
+                );
+            Task<Manager> getUserAsManager = Task<Manager>.Factory.StartNew(
+                () => managerService.GetManagerByEmail(email)
+                );
+            
+            Customer userAsCustomer = await getUserAsCustomer;
+            Manager userAsManager = await getUserAsManager;
             if (userAsCustomer == null)
             {
                 if (userAsManager == null)

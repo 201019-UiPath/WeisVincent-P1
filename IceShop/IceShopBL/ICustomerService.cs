@@ -6,6 +6,7 @@ namespace IceShopBL
     public interface ICustomerService
     {
         void AddCustomerToRepo(Customer newCustomer);
+        void UpdateCustomerEntry(Customer existingCustomer);
         List<Customer> GetAllCustomers();
         List<Order> GetAllOrdersForCustomer(Customer customer);
         List<Order> GetAllOrdersForCustomerAsync(Customer customer);

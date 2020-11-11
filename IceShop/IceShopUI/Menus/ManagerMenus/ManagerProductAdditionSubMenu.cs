@@ -1,4 +1,5 @@
 ﻿using IceShopBL;
+using IceShopBL.Services;
 using IceShopDB.Models;
 using IceShopDB.Repos;
 using Serilog;
@@ -11,8 +12,8 @@ namespace IceShopUI.Menus.ManagerMenus
     {
         private readonly Location CurrentLocation;
         private readonly List<InventoryLineItem> locationStock;
-        private readonly LocationService locationService;
-        private readonly ProductService productService;
+        private readonly ILocationService locationService;
+        private readonly IProductService productService;
 
         private readonly List<Product> UnstockedProducts;
 
