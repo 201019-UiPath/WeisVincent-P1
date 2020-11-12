@@ -2,7 +2,6 @@
 using IceShopDB.Repos;
 using Serilog;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace IceShopBL.Services
 {

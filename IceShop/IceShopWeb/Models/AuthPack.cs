@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace IceShopWeb.Models
 {
@@ -29,7 +25,7 @@ namespace IceShopWeb.Models
 
         [Required]
         [DisplayName("Password")]
-        [DataType(DataType.Password)]
+        [DataType(DataType.Password, ErrorMessage = "A user password needs 8 word characters.")]
         public string Password { get; set; }
     }
 }

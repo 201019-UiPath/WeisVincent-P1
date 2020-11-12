@@ -6,12 +6,10 @@
     // TODO: Populate this view with options for a customer who has just logged in.
 }
 
+<h2>Welcome, @CurrentCustomer.Name!</h2>
 
+<h4>What would you like to do?</h4>
 
-@Html.ActionLink("View Order History", "ViewOrderHistory", "Customer")
-@Html.ActionLink("Place Order", "ViewLocationInventory", "Customer")
-@Html.ActionLink("View Current Cart", "ViewOrderCart", "Customer")
-
-<button asp-action="ViewOrderHistory" asp-controller="Customer">View Order History</button>
-<button asp-action="ViewLocationInventory" asp-controller="Customer">Place Order</button>
-<button asp-action="ViewOrderCart" asp-controller="Customer">View Current Cart</button>
+<input type="button" value="View Order History" onclick="window.location.href='@Url.Action("GetOrderHistory", "Customer")'" />
+<input type="button" value="Place Order" onclick="window.location.href='@Url.Action("GetLocationInventory", "Customer")'" />
+<input type="button" value="View Current Cart" onclick="window.location.href='@Url.Action("ViewOrderCart", "Customer")'" />

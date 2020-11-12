@@ -3,6 +3,14 @@
 @{
     ViewData["Title"] = "Ice Shop Login";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    bool writeRedirectError = false;
+    if (ViewData["Redirect"] != null)
+    {
+        writeRedirectError = true;
+    }
+    string redirectString = $"<h5 class='text-danger text-capitalize'>{ViewData["Redirect"]}</h5>";
+
 }
 
 
@@ -10,30 +18,21 @@
 <h1>@ViewData["Title"]</h1>
 
 <h4>Login</h4>
+<h5 class='text-danger text-capitalize'>@ViewData["Redirect"]</h5>
+@{ if (writeRedirectError) { @Html.DisplayText(redirectString)} }
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Login">
             @*<input type="hidden" asp-for="Id" />*@
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input type="email" asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input type="password" asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+            @await Html.PartialAsync("_AuthFormElements", Model)
         </form>
     </div>
 </div>
 
 <div>
     <a asp-action="SignUp">Sign up</a>
+    <a asp-action="Login" asp-controller="Manager">Login as Manager</a>
 </div>
 
 

@@ -1,6 +1,5 @@
 ﻿using IceShopDB.Models;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace IceShopBL
 {

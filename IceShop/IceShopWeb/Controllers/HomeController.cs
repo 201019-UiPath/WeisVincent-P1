@@ -1,13 +1,15 @@
 ﻿using IceShopWeb.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
-using mvc = IceShopWeb.Models;
+using System.Threading.Tasks;
 
 namespace IceShopWeb.Controllers
 {
+    
     public class HomeController : Controller
     {
         const string url = "https://localhost:5001/api/";
@@ -19,56 +21,72 @@ namespace IceShopWeb.Controllers
             _logger = logger;
         }
         
-
-        public ViewResult Login()
+        [HttpGet]
+        public ViewResult Login(int? sessionExists)
         {
+            if (sessionExists == 0)
+            {
+                ViewData["Redirect"] = "Your session does not exist. Please sign in.";
+            }
             return View();
         }
-        [HttpPost]
-        public IActionResult Login(AuthPack userInput)
+        
+        public async Task<IActionResult> Login(AuthPack userInput)
         {
-            // Passing viewdata to the Index.cshtml file
-            Customer sampleCustomer = new Customer("Sample Name", "sample@email.emailcom", "password", "The Ultimate Customer") { Id = -127 };
-            ViewData["CustomerUsingViewData"] = sampleCustomer;
-
-            //ViewBag.id = id;
-            //ViewBag.name = name;
-
-            ViewBag.Homie = sampleCustomer;
-
             if (ModelState.IsValid)
             {
                 string inputEmail = userInput.Email;
                 string inputPassword = userInput.Password;
 
-                using (var client = new HttpClient())
+
+                /*using var client = new HttpClient();
+                client.BaseAddress = new Uri(url);*/
+
+                using var client = VincentExtensions.MakeInsecureHttpClient();
+
+                string request = $"customer/get/{inputEmail}";
+
+                
+                var resultCustomer = await this.GetDataAsync<Customer>(request);
+
+                if (resultCustomer.Password == inputPassword && resultCustomer.Email == inputEmail)
                 {
-                    client.BaseAddress = new Uri(url);
-                    var response = client.GetAsync($"customer/get/{inputEmail}");
-                    response.Wait();
+                    HttpContext.Session.Set<Customer>("CurrentCustomer", resultCustomer);
+                    return RedirectToAction("Index", "Customer");
+                }
+                else
+                {
+                    return View(userInput);
+                }
 
-                    var result = response.Result;
-                    if (result.IsSuccessStatusCode)
+                #region Old way of logging in
+                /*var response = client.GetAsync(request);
+
+                response.Wait();
+
+                var result = response.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<Customer>();
+                    readTask.Wait();
+
+                    var resultCustomer = readTask.Result;
+
+                    if (resultCustomer.Password == inputPassword && resultCustomer.Email == inputEmail)
                     {
-                        var readTask = result.Content.ReadAsAsync<Customer>();
-                        readTask.Wait();
-
-                        var resultCustomer = readTask.Result;
-
-                        if (resultCustomer.Password == inputPassword && resultCustomer.Email == inputEmail)
-                        {
-                            HttpContext.Session.Set<Customer>("CurrentCustomer", resultCustomer);
-                            return RedirectToAction("GetAllCustomers", "Customer");
-                        } else
-                        {
-                            return View(userInput);
-                        }
-
+                        HttpContext.Session.Set<Customer>("CurrentCustomer", resultCustomer);
+                        return RedirectToAction("Index", "Customer");
+                    }
+                    else
+                    {
+                        return View(userInput);
                     }
 
-                    //return RedirectToAction("Index", "Customer");
+                }*/
 
-                }
+
+                //return RedirectToAction("Index", "Customer");
+                #endregion
 
             }
 
@@ -78,7 +96,7 @@ namespace IceShopWeb.Controllers
 
         // This following line of code is attribute-based routing.
         // Make sure it doesn't conflict with the conventional routing in the Startup.cs
-        [Route(("Controller=Home/action=Privacy/"))]
+        [Route(("Privacy/"))]
         public IActionResult Privacy()
         {
             return View();

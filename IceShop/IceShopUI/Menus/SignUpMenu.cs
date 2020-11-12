@@ -1,5 +1,4 @@
-﻿using IceShopBL;
-using IceShopBL.Services;
+﻿using IceShopBL.Services;
 using IceShopDB.Models;
 using IceShopDB.Repos;
 using IceShopUI.Menus.ManagerMenus;

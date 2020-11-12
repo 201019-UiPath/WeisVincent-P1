@@ -1,11 +1,5 @@
-﻿using IceShopBL;
-using IceShopDB.Models;
-using IceShopLib;
-using IceShopLib.Validation;
-using Serilog;
-using System;
+﻿using Serilog;
 using System.Collections.Generic;
-using System.Text;
 
 namespace IceShopUI.Menus
 {

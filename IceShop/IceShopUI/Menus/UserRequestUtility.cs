@@ -1,8 +1,6 @@
-﻿using IceShopBL;
-using IceShopLib.Validation;
+﻿using IceShopLib.Validation;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace IceShopUI.Menus
 {

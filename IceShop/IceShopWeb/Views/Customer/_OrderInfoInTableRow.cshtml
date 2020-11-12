@@ -1,0 +1,22 @@
+﻿@model IceShopWeb.Models.Order
+@{var order = Model;}
+
+<tr>
+    <td>
+        @Html.DisplayFor(o => o.Location.Name)
+    </td>
+    <td>
+        $@Html.DisplayFor(o => o.Subtotal)
+    </td>
+    <td>
+        @Html.DisplayFor(o => o.Address)
+    </td>
+    <td>
+
+    </td>
+    <td>
+        @Html.ActionLink("View Products", "ViewProductsInOrder", new { /* id=item.PrimaryKey */ }) |
+        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+    </td>
+</tr>

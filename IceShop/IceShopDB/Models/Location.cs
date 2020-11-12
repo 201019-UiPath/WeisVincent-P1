@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IceShopDB.Models
 {
-    
+
     /// <summary>
     /// This class represents a single location of the store, complete with a name and address, an Id, and navigation properties to represent the location's managers and stock items.
     /// </summary>

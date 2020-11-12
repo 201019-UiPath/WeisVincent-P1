@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using IceShopBL;
+﻿using IceShopBL;
 using IceShopDB.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace IceShopAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("AllowSpecificOrigin")]
     public class CustomerController : Controller
     {
         private readonly ICustomerService _customerService;
@@ -64,12 +63,13 @@ namespace IceShopAPI.Controllers
         }
 
 
-        [HttpGet("get/orders/{customer}")]
+        [HttpGet("get/orders/{email}")]
         [Produces("application/json")]
-        public IActionResult GetOrders(Customer customer)
+        public IActionResult GetOrders(string email)
         {
             try
             {
+                var customer = _customerService.GetCustomerByEmail(email);
                 return Ok(_customerService.GetAllOrdersForCustomer(customer));
             }
             catch (Exception)

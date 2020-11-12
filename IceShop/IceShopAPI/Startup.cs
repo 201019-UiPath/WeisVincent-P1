@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using IceShopBL;
 using IceShopBL.Services;
 using IceShopDB;
@@ -9,13 +5,12 @@ using IceShopDB.Repos;
 using IceShopDB.Repos.DBRepos;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using System.Net;
 
 namespace IceShopAPI
 {
@@ -37,7 +32,7 @@ namespace IceShopAPI
             services.AddCors(options=> {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                     builder => {
-                        builder.WithOrigins(/*TODO: Add specifically permitted origin, the front end*/)
+                        builder.WithOrigins(""/*new string[]{ "https://localhost:44329","http://localhost:65347"}*//*TODO: Add specifically permitted origin, the front end*/)
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                     }
@@ -54,9 +49,11 @@ namespace IceShopAPI
 
             // TODO: Add session services and implementation
 
+            ServicePointManager.ServerCertificateValidationCallback = (sender, cert, chain, errors) => { return true; };
+
             services.AddDbContext<IceShopContext>(options => options.UseNpgsql(Configuration.GetConnectionString("IceShopDB")));
 
-
+            services.AddAuthorization();
 
             // This adds a scoped service, meaning that a new one is made and reused within a request made, which means multiple can be used at once by many users.
             // Think of this as shorthand for, "Hey, ASP.Net. If any of my controllers need an IRepository, use the DBRepo implementation."

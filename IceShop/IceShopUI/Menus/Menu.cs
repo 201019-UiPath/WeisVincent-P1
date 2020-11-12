@@ -1,6 +1,4 @@
-﻿using IceShopBL;
-using IceShopDB.Repos;
-using IceShopLib.Validation;
+﻿using IceShopDB.Repos;
 using System;
 using System.Collections.Generic;
 using Xunit.Sdk;

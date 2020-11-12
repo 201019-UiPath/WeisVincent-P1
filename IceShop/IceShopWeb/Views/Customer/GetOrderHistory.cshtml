@@ -1,0 +1,53 @@
+﻿@model IEnumerable<IceShopWeb.Models.Order>
+@{
+    ViewData["Title"] = "GetOrderHistory";
+    Layout = "_Layout";
+    var orders = Model;
+    var exampleCustomer = orders.First();
+}
+
+
+
+<div class="text-center">
+
+    <h1>GetCustomersByName</h1>
+
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Location)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Subtotal)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Address)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().TimeOrderWasPlaced)
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var order in Model)
+                {
+                    // I manually add the customer as a model here, rather than the Model, which is a collection of customers.
+                    // I need only one, not a list.
+
+                    @await Html.PartialAsync($"_OrderInfoInTableRow", order);
+                }
+            }
+
+        </tbody>
+    </table>
+
+
+</div>
