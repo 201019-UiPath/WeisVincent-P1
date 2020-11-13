@@ -71,7 +71,7 @@ namespace IceShopAPI.Controllers
         {
             try
             {
-                APIMapper mapper = new APIMapper();
+                APIMapperProfile mapper = new APIMapperProfile();
                 var customer = _customerService.GetCustomerByEmail(email);
                 var orders = _customerService.GetAllOrdersForCustomer(customer);
 

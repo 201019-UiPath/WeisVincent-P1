@@ -6,9 +6,8 @@ namespace IceShopWeb.Models
     public class Order
     {
 
-        internal Order()
+        public Order()
         {
-
         }
         
         /// <summary>

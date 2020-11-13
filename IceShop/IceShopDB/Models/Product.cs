@@ -43,17 +43,5 @@ namespace IceShopDB.Models
 
         public List<InventoryLineItem> LocationsWithProduct { get; set; }
 
-
-
-        //public List<LocationStockedProduct> LocationsStockedAt;
-
-
-
-
-
-
-
-
-
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IceShopWeb.Models
 {
@@ -22,6 +23,7 @@ namespace IceShopWeb.Models
         [Column("product_quantity")]
         public int ProductQuantity { get; set; }
 
+        [JsonConstructor]
         internal OrderLineItem(int orderId, int productId, int productQuantity)
         {
             OrderId = orderId;

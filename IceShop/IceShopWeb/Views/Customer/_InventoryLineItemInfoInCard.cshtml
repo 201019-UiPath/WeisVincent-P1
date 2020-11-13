@@ -1,0 +1,21 @@
+﻿@model InventoryLineItem
+
+
+<div class="card" style="width: 8rem">
+    <img src="" alt="">
+    <div class="card-body">
+        <h5>@Html.DisplayFor(model => model.Product.Name)</h5>
+        <div class="row">
+            <div class="col">
+                <p class="card-text text-md-center">@Html.DisplayFor(model => model.Product.TypeOfProductAsString)</p>
+            </div>
+            <div class="col">
+                <p class="card-text text-md-center">$@Html.DisplayFor(model => model.Product.Price)</p>
+            </div>
+            <div class="col">
+                <button class="btn btn-primary text-white float-right" onclick="location.href='@Url.Action("AddItemToCart", "Customer", Model)'">Add to Cart</button>
+            </div>
+        </div>
+
+    </div>
+</div>

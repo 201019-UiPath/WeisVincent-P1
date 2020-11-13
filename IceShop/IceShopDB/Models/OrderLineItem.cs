@@ -22,7 +22,7 @@ namespace IceShopDB.Models
         [Column("product_quantity")]
         public int ProductQuantity { get; set; }
 
-        internal OrderLineItem(int orderId, int productId, int productQuantity)
+        public OrderLineItem(int orderId, int productId, int productQuantity)
         {
             OrderId = orderId;
             ProductId = productId;

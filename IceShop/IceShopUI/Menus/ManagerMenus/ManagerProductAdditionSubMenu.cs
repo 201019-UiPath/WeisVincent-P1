@@ -116,7 +116,7 @@ namespace IceShopUI.Menus.ManagerMenus
             Console.WriteLine("Enter a valid whole number price. We don't do that round-up 59.99 garbage here.");
             double newPrice = UserRequestUtility.QueryQuantity();
 
-            ProductType newType = ProductType.Metaphysical;
+            ProductType newType = ProductType.Water;
 
             List<string> possibleTypes = new List<string>();
             foreach (string type in Enum.GetNames(typeof(ProductType)))

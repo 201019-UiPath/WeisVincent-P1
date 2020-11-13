@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IceShopWeb.Models
 {
@@ -11,18 +12,17 @@ namespace IceShopWeb.Models
     {
         /*[Key]
         public int Id { get; set; }*/
-
-        [ForeignKey("Location")]
+        public InventoryLineItem() { }
+        
         public int LocationId { get; set; }
-        public Location Location { get; set; }
+        //public Location Location { get; set; }
 
-        [ForeignKey("Product")]
         public int ProductId { get; set; }
         public Product Product { get; set; }
 
-        [Column("ProductQuantity")]
+        
         public int ProductQuantity { get; set; }
-
+        
         internal InventoryLineItem(int locationId, int productId, int productQuantity)
         {
             LocationId = locationId;
@@ -30,11 +30,16 @@ namespace IceShopWeb.Models
             ProductQuantity = productQuantity;
 
         }
+        [JsonConstructor]
+        public InventoryLineItem(int locationId, Product product, int productQuantity) : this(locationId, product.Id, productQuantity)
+        {
+            Product = product;
+        }
 
         public InventoryLineItem(Location location, Product product, int productQuantity) : this(location.Id, product.Id, productQuantity)
         {
             Product = product;
-            Location = location;
+            //Location = location;
         }
 
 

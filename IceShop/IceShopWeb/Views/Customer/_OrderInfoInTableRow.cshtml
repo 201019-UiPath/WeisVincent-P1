@@ -15,6 +15,6 @@
         @Html.DisplayFor(o => o.TimeOrderWasPlacedAsString)
     </td>
     <td>
-        @Html.ActionLink("View Products", "ViewOrderDetails", Model)
+        @Html.ActionLink("View Products", "ViewOrderDetails", new { orderId = order.Id })
     </td>
 </tr>

@@ -14,13 +14,27 @@ namespace IceShopWeb.Controllers
         const string url = "https://localhost:5001/api/";
 
         private Customer CurrentCustomer {
-            get { 
-                return HttpContext.Session.Get<Customer>("CurrentCustomer"); 
-            } 
-            set { 
-                HttpContext.Session.Set("CurrentCustomer", value); 
-            } 
+            get {
+                return HttpContext.Session.Get<Customer>("CurrentCustomer");
+            }
+            set {
+                HttpContext.Session.Set("CurrentCustomer", value);
+            }
         }
+
+        private List<StagedLineItem> CurrentCart
+        {
+            get
+            {
+                return HttpContext.Session.Get<List<StagedLineItem>>("CurrentCart");
+            }
+            set
+            {
+                HttpContext.Session.Set("CurrentCart", value);
+            }
+        }
+
+        private Location CurrentLocation { get { return HttpContext.Session.Get<Location>("CurrentLocation"); } set { HttpContext.Session.Set<Location>("CurrentLocation", value); } }
 
         private readonly IActionResult LoginRedirectAction;
         private readonly Task<IActionResult> LoginRedirectActionTask;
@@ -34,7 +48,7 @@ namespace IceShopWeb.Controllers
         public async Task<IActionResult> Index()
         {
             // TODO: Check if the customer is logged in before returning this
-            if(CurrentCustomer == null)
+            if (CurrentCustomer == null)
             {
                 return await LoginRedirectActionTask;
             }
@@ -46,7 +60,7 @@ namespace IceShopWeb.Controllers
         {
             if (CurrentCustomer == null)
             {
-                return await LoginRedirectActionTask; 
+                return await LoginRedirectActionTask;
             }
 
             string request = $"customer/get/orders/{CurrentCustomer.Email}";
@@ -69,25 +83,26 @@ namespace IceShopWeb.Controllers
                 3 => receivedOrders.OrderBy(o => o.Subtotal).Reverse().ToList(),
                 _ => receivedOrders
             };
-            
+
             if (receivedOrders != default) return View(sortedOrders); else return StatusCode(500);
             //return resultView;
-            
+
             return StatusCode(500);
         }
 
         [Route("orders/details")]
-        public async Task<IActionResult> ViewOrderDetails(Order order)
+        public async Task<IActionResult> ViewOrderDetails(int orderId)
         {
-            if (CurrentCustomer == null)
-            {
-                return await LoginRedirectActionTask;
-            }
-
-            string request = $"order/products/get/{order}";
-            var receivedOrderLineItems = await this.GetDataAsync<List<OrderLineItem>>(request);
+            if (CurrentCustomer == null) return await LoginRedirectActionTask;
+            string olisRequest = $"order/products/get/{orderId}";
+            var receivedOrderLineItems = await this.GetDataAsync<List<OrderLineItem>>(olisRequest);
             string productsRequest = $"product/get";
             var receivedProducts = await this.GetDataAsync<List<Product>>(productsRequest);
+
+            if (receivedOrderLineItems == null)
+            {
+                return StatusCode(500);
+            }
 
 
             foreach (OrderLineItem oli in receivedOrderLineItems)
@@ -185,12 +200,12 @@ namespace IceShopWeb.Controllers
             // TODO: Use Customer MVC Model instead of DB Model
             if (ModelState.IsValid)
             {
-                Customer newCustomer = new Customer(customer.Name,customer.Email, customer.Password,customer.Address);
+                Customer newCustomer = new Customer(customer.Name, customer.Email, customer.Password, customer.Address);
 
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var response = client.GetAsync($"customer/add/{newCustomer}");
+                    var response = client.PostAsJsonAsync($"customer/add", newCustomer);
                     response.Wait();
 
                     var result = response.Result;
@@ -208,7 +223,76 @@ namespace IceShopWeb.Controllers
                 return Redirect("GetAllCustomers");
             }
             else return View();
+        }
 
+        [Route("order/")]
+        public async Task<IActionResult> SelectLocation()
+        {
+            if (CurrentCustomer == null) return await LoginRedirectActionTask;
+            string request = $"location/get";
+
+            var locations = await this.GetDataAsync<List<Location>>(request);
+
+            return View(locations);
+        }
+
+        [Route("order/viewStock/{locationId}")]
+        public async Task<IActionResult> ViewInventoryAtLocation(int locationId)
+        {
+            if (CurrentLocation == null) {
+                string requestLocations = $"location/get";
+
+                var locations = await this.GetDataAsync<List<Location>>(requestLocations);
+
+                CurrentLocation = locations.Where(l=>l.Id == locationId).First();
+            };
+
+            if (CurrentCustomer == null) return await LoginRedirectActionTask;
+
+            string request = $"location/stock/get/{locationId}";
+
+            var stock = await this.GetDataAsync<List<InventoryLineItem>>(request);
+
+            return View(stock);
+        }
+
+        [Route("order/cart/view")]
+        public async Task<IActionResult> ViewCart()
+        {
+            if (CurrentCustomer == null) return await LoginRedirectActionTask;
+
+            if (CurrentCart != null) return View(CurrentCart);
+
+            ModelState.AddModelError(string.Empty, "Your cart is empty.");
+
+            return View(CurrentCart);
+            
+        }
+
+        [Route("order/cart/add")]
+        public async Task<IActionResult> AddItemToCart(InventoryLineItem ili)
+        {
+            if (CurrentCustomer == null) return await LoginRedirectActionTask;
+
+            if (CurrentCart == null) CurrentCart = new List<StagedLineItem>();
+
+            try
+            {
+                try
+                {
+                    CurrentCart.First(sli => sli.affectedInventoryLineItem.Equals(ili)).Quantity += 1;
+                } catch (InvalidOperationException)
+                {
+                    StagedLineItem newSLI = new StagedLineItem(ili.Product, 1, ili);
+                    CurrentCart.Add(newSLI);
+                }
+               
+            } catch (Exception)
+            {
+                ModelState.AddModelError(string.Empty, "Could not add item to cart.");
+            }
+
+            return RedirectToAction("ViewInventoryAtLocation", new { locationId = CurrentLocation.Id });
 
         }
 

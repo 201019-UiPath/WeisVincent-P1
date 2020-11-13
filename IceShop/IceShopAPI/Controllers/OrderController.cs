@@ -1,7 +1,10 @@
-﻿using IceShopBL;
+﻿using AutoMapper;
+using IceShopAPI.DTO;
+using IceShopBL;
 using IceShopDB.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 
 namespace IceShopAPI.Controllers
 {
@@ -9,13 +12,16 @@ namespace IceShopAPI.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
+        private readonly IMapper _mapper;
+
         private readonly IOrderService _orderService;
 
         // TODO: What in the world do I do with OrderBuilder?
 
-        public OrderController(IOrderService orderService)
+        public OrderController(IOrderService orderService, IMapper mapper)
         {
             _orderService = orderService;
+            _mapper = mapper;
         }
 
         [HttpGet("products/get/{orderId}")]
@@ -25,7 +31,9 @@ namespace IceShopAPI.Controllers
             try
             {
                 var order = _orderService.GetOrderById(orderId);
-                return Ok(_orderService.GetAllProductsInOrder(order));
+                var productDTOs = _mapper.Map<List<OrderDTO>>(_orderService.GetAllProductsInOrder(order));
+
+                return Ok(productDTOs);
             }
             catch (Exception)
             {

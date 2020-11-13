@@ -1,0 +1,52 @@
+﻿@model List<InventoryLineItem>
+
+@{ 
+    var inventoryLineItems = Model;
+}
+
+
+<h1>Products in Cart</h1>
+<div class="text-center container card-deck">
+
+    
+    @{
+        foreach (var ili in inventoryLineItems)
+        {
+
+            @await Html.PartialAsync($"_InventoryLineItemInfoInCard", ili);
+        }
+    }
+    <table style="display: none;" class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Product.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Product.TypeOfProductAsString)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Product.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Product.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().ProductQuantity)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var ili in inventoryLineItems)
+                {
+
+                    @await Html.PartialAsync($"_InventoryLineItemInfoInTableRow", ili);
+                }
+            }
+
+        </tbody>
+    </table>
+
+
+</div>

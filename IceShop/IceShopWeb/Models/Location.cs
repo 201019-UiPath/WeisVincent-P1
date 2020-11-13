@@ -9,6 +9,8 @@ namespace IceShopWeb.Models
     {
         // TODO: Create Location constructors
 
+        internal Location() { }
+
         public Location(string name, string address)
         {
             Name = name;
@@ -28,7 +30,7 @@ namespace IceShopWeb.Models
 
         public List<InventoryLineItem> InventoryLineItems { get; set; }
 
-        public List<Manager> Managers { get; set; }
+        //public List<Manager> Managers { get; set; }
 
         //public Stack<Order> OrderHistory;
 

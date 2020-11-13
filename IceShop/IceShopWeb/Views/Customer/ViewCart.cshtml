@@ -1,0 +1,46 @@
+﻿@model List<StagedLineItem>
+
+@{ 
+    var stagedLineItems = Model;
+}
+
+
+
+<div class="text-center">
+
+    <h1>Products in Cart</h1>
+    <button class="btn btn-primary text-white" onclick="location.href='@Url.Action("SubmitOrder", "Customer", Model)'">Add to Cart</button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Product.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Product.TypeOfProductAsString)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Product.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Product.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Quantity)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var sli in stagedLineItems)
+                {
+
+                    @await Html.PartialAsync($"_StagedLineItemInfoInTableRow", sli);
+                }
+            }
+
+        </tbody>
+    </table>
+
+
+</div>

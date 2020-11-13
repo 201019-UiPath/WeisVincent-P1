@@ -1,0 +1,13 @@
+﻿@model Location
+
+<tr>
+    <td>
+        @Html.DisplayFor(l => l.Name)
+    </td>
+    <td>
+        @Html.DisplayFor(l => l.Id)
+    </td>
+    <td>
+        @Html.ActionLink("Order from this location.", "ViewInventoryAtLocation", new { locationId = Model.Id})
+    </td>
+</tr>

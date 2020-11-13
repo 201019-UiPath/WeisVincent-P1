@@ -65,7 +65,7 @@ namespace IceShopDB.Repos
         public static List<Location> GetSampleLocations()
         {
             return new List<Location>() {
-                new Location("Hell","Earth's core, presumably.") {
+                new Location("Hell","A very cold place, at certain rings.") {
                     Id = -1,
                 },
                 new Location( "Antarctica", "Santaville.") {

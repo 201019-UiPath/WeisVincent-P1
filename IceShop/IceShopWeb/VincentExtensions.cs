@@ -53,6 +53,18 @@ namespace IceShopWeb
             else return default;
         }
 
+        public async static Task<bool> PostDataAsync<T>(this Controller controller, string request, T data)
+        {
+            using var client = MakeInsecureHttpClient();
+
+            Task<HttpResponseMessage> response = client.PostAsJsonAsync(request, data);
+
+            HttpResponseMessage result = await response;
+            if (result.IsSuccessStatusCode) return true; else return false;
+        }
+
+
+
         public static HttpClient MakeInsecureHttpClient()
         {
             string url = "http://localhost:5000/api/";

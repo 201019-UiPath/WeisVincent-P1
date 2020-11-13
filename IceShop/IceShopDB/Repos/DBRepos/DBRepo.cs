@@ -205,7 +205,8 @@ namespace IceShopDB.Repos.DBRepos
         public List<OrderLineItem> GetOrderedProductsInAnOrder(int orderId)
         {
             // TODO: Remember using AsNoTracking();
-            return context.OrderLineItems.Include("Product").Include("Order").Where(op => op.OrderId == orderId)/*.AsNoTracking()*/.ToList();
+            var olis = context.OrderLineItems.Include("Product").Include("Order").Where(op => op.OrderId == orderId)/*.AsNoTracking()*/.ToList();
+            return olis;
         }
 
         public Task<List<OrderLineItem>> GetOrderedProductsInAnOrderAsync(int orderId)

@@ -44,10 +44,10 @@ namespace IceShopWeb.Models
         public string Description { get; set; }
 
 
-        public List<OrderLineItem> OrdersWithProduct { get; set; }
+        //public List<OrderLineItem> OrdersWithProduct { get; set; }
 
 
-        public List<InventoryLineItem> LocationsWithProduct { get; set; }
+        //public List<InventoryLineItem> LocationsWithProduct { get; set; }
 
 
 

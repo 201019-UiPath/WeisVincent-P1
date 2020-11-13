@@ -1,0 +1,20 @@
+﻿@model InventoryLineItem
+
+
+<tr>
+    <td>
+        @Html.DisplayFor(ili => ili.Product.Name)
+    </td>
+    <td>
+        @Html.DisplayFor(ili => ili.Product.TypeOfProductAsString)
+    </td>
+    <td>
+        $@Html.DisplayFor(ili => ili.Product.Price)
+    </td>
+    <td>
+        @Html.DisplayFor(ili => ili.Product.Description)
+    </td>
+    <td>
+        @Html.DisplayFor(ili => ili.ProductQuantity)
+    </td>
+</tr>

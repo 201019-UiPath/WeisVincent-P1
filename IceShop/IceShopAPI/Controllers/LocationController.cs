@@ -1,7 +1,11 @@
-﻿using IceShopBL;
+﻿using AutoMapper;
+using IceShopAPI.DTO;
+using IceShopBL;
 using IceShopDB.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,12 +15,14 @@ namespace IceShopAPI.Controllers
     [ApiController]
     public class LocationController : ControllerBase
     {
+        private readonly IMapper _mapper;
 
         private readonly ILocationService _locationService;
 
-        public LocationController(ILocationService locationService)
+        public LocationController(ILocationService locationService, IMapper mapper)
         {
             _locationService = locationService;
+            _mapper = mapper;
         }
 
         [HttpGet("get")]
@@ -34,15 +40,27 @@ namespace IceShopAPI.Controllers
             }
         }
 
-        [HttpGet("stock/get/{location}")]
+        [HttpGet("stock/get/{locationId}")]
         [Produces("application/json")]
-        public IActionResult GetStockAtLocation(Location location)
+        public IActionResult GetStockAtLocation(int locationId)
         {
-            try
+            //try
             {
-                return Ok(_locationService.GetAllProductsStockedAtLocation(location));
+                var location = _locationService.GetAllLocations().Single(l => l.Id == locationId);
+
+                var stock = _locationService.GetAllProductsStockedAtLocation(location);
+
+                var stockDTOs = new List<ILIDTO>();
+
+                foreach(InventoryLineItem ili in stock)
+                {
+                    stockDTOs.Add(_mapper.Map<ILIDTO>(ili));
+                    Console.WriteLine($"Added {ili}");
+                }
+
+                return Ok(stockDTOs);
             }
-            catch (Exception)
+            //catch (Exception)
             {
                 // TODO: Check if this is the right error code for this.
                 return StatusCode(500);
