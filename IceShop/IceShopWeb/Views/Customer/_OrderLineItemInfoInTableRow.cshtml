@@ -1,0 +1,20 @@
+﻿@model OrderLineItem
+@{var order = Model;}
+
+<tr>
+    <td>
+        @Html.DisplayFor(oli => oli.Product.Name)
+    </td>
+    <td>
+        $@Html.DisplayFor(oli => oli.Product.TypeOfProductAsString)
+    </td>
+    <td>
+        $@Html.DisplayFor(oli => oli.Product.Price)
+    </td>
+    <td>
+        @Html.DisplayFor(oli => oli.Product.Description)
+    </td>
+    <td>
+        @Html.DisplayFor(oli => oli.ProductQuantity)
+    </td>
+</tr>

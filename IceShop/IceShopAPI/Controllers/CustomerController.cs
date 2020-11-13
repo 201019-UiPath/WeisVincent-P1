@@ -1,8 +1,10 @@
-﻿using IceShopBL;
+﻿using IceShopAPI.DTO;
+using IceShopBL;
 using IceShopDB.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 
 namespace IceShopAPI.Controllers
 {
@@ -69,8 +71,18 @@ namespace IceShopAPI.Controllers
         {
             try
             {
+                APIMapper mapper = new APIMapper();
                 var customer = _customerService.GetCustomerByEmail(email);
-                return Ok(_customerService.GetAllOrdersForCustomer(customer));
+                var orders = _customerService.GetAllOrdersForCustomer(customer);
+
+
+                List<OrderDTO> result = mapper.ParseOrders(orders);
+
+                
+                
+
+                //return Content(orders[0].Customer.ToString());
+                return Ok(result);
             }
             catch (Exception)
             {

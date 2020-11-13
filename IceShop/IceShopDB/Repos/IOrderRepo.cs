@@ -17,7 +17,7 @@ namespace IceShopDB.Repos
         void AddOrderAsync(Order order);
 
 
-
+        Order GetOrderById(int orderId);
 
 
         /// <summary>

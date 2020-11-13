@@ -10,6 +10,6 @@
 
 <h4>What would you like to do?</h4>
 
-<input type="button" value="View Order History" onclick="window.location.href='@Url.Action("GetOrderHistory", "Customer")'" />
+<input type="button" value="View Order History" onclick="window.location.href='@Url.ActionLink(action:"GetOrderHistory", controller:"Customer")'" />
 <input type="button" value="Place Order" onclick="window.location.href='@Url.Action("GetLocationInventory", "Customer")'" />
 <input type="button" value="View Current Cart" onclick="window.location.href='@Url.Action("ViewOrderCart", "Customer")'" />

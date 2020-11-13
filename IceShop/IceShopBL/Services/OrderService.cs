@@ -44,6 +44,9 @@ namespace IceShopBL.Services
             return Repo.GetOrderedProductsInAnOrderAsync(order.Id);
         }
 
-
+        public Order GetOrderById(int orderId)
+        {
+            return Repo.GetOrderById(orderId);
+        }
     }
 }

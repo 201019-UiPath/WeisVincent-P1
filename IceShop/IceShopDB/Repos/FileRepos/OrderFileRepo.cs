@@ -50,5 +50,10 @@ namespace IceShopDB.Repos.FileRepos
         {
             throw new NotImplementedException();
         }
+
+        public Order GetOrderById(int orderId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

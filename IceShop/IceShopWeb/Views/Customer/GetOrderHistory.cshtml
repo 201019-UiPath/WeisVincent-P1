@@ -1,20 +1,27 @@
-﻿@model IEnumerable<IceShopWeb.Models.Order>
+﻿@model List<IceShopWeb.Models.Order>
 @{
-    ViewData["Title"] = "GetOrderHistory";
+    ViewData["Title"] = "Get Order History";
     Layout = "_Layout";
     var orders = Model;
-    var exampleCustomer = orders.First();
+    
 }
 
 
 
 <div class="text-center">
 
-    <h1>GetCustomersByName</h1>
+    <h1>Order History</h1>
 
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
+    <h4>Sort orders...</h4>
+    @Html.ActionLink("By Date Placed, ascending.", "GetOrderHistory", "Customer", new { sortBy = 0 })
+    @Html.ActionLink("By Date Placed, descending.", "GetOrderHistory", "Customer", new { sortBy = 1 })
+    @Html.ActionLink("By Price, ascending.", "GetOrderHistory", "Customer", new { sortBy = 2 })
+    @Html.ActionLink("By Price, descending.", "GetOrderHistory", "Customer", new { sortBy = 3 })
+    <input type="button" value="Sort Order History by " onclick="window.location.href='@Url.ActionLink(action:"GetOrderHistory", controller:"Customer",0)'" />
+    <input type="button" value="Sort Order History by " onclick="window.location.href='@Url.ActionLink(action:"GetOrderHistory", controller:"Customer",1)'" />
+    <input type="button" value="Sort Order History by " onclick="window.location.href='@Url.ActionLink(action:"GetOrderHistory", controller:"Customer",2)'" />
+    <input type="button" value="Sort Order History by " onclick="window.location.href='@Url.ActionLink(action:"GetOrderHistory", controller:"Customer",3)'" />
+    
     <table class="table">
         <thead>
             <tr>
@@ -37,7 +44,7 @@
         </thead>
         <tbody>
             @{
-                foreach (var order in Model)
+                foreach (var order in orders)
                 {
                     // I manually add the customer as a model here, rather than the Model, which is a collection of customers.
                     // I need only one, not a list.

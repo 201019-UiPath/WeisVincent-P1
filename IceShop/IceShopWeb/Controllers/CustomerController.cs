@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IceShopWeb.Controllers
 {
-
+    [Route("user")]
     public class CustomerController : Controller
     {
         const string url = "https://localhost:5001/api/";
@@ -30,7 +30,7 @@ namespace IceShopWeb.Controllers
             LoginRedirectActionTask = Task.Factory.StartNew(() => LoginRedirectAction);
         }
 
-        [Route("u/")]
+        [Route("")]
         public async Task<IActionResult> Index()
         {
             // TODO: Check if the customer is logged in before returning this
@@ -41,7 +41,7 @@ namespace IceShopWeb.Controllers
             return await Task.Factory.StartNew(() => View(CurrentCustomer));
         }
 
-        [Route("u/orders/{sortBy}")]
+        [Route("orders")]
         public async Task<IActionResult> GetOrderHistory(int? sortBy)
         {
             if (CurrentCustomer == null)
@@ -49,44 +49,54 @@ namespace IceShopWeb.Controllers
                 return await LoginRedirectActionTask; 
             }
 
-
-            string request = $"customer/get/orders/{CurrentCustomer.Id}";
-
+            string request = $"customer/get/orders/{CurrentCustomer.Email}";
             var receivedOrders = await this.GetDataAsync<List<Order>>(request);
 
-            var sortedOrders = sortBy switch
+            string locationRequest = $"location/get";
+            var receivedLocations = await this.GetDataAsync<List<Location>>(locationRequest);
+
+            foreach (Order order in receivedOrders)
             {
-                0 => receivedOrders.OrderBy(o => o.Subtotal),
-                1 => receivedOrders.OrderBy(o => o.Subtotal).Reverse(),
-                2 => receivedOrders.OrderBy(o => o.TimeOrderWasPlaced),
-                3 => receivedOrders.OrderBy(o => o.TimeOrderWasPlaced).Reverse(),
+                order.Location = receivedLocations.Single(l => l.Id == order.LocationId);
+            }
+
+            List<Order> sortedOrders = receivedOrders;
+            sortedOrders = sortBy switch
+            {
+                0 => receivedOrders.OrderBy(o => o.TimeOrderWasPlaced).ToList(),
+                1 => receivedOrders.OrderBy(o => o.TimeOrderWasPlaced).Reverse().ToList(),
+                2 => receivedOrders.OrderBy(o => o.Subtotal).ToList(),
+                3 => receivedOrders.OrderBy(o => o.Subtotal).Reverse().ToList(),
                 _ => receivedOrders
             };
-
-            var resultView = receivedOrders != default ? View(sortedOrders) : null;
-
-            if (resultView != null) return resultView; else return StatusCode(500);
-            return resultView;
-            #region Old way of doing things
-            /*var response = client.GetAsync(request);
-
-            response.Wait();
-
-            var result = response.Result;
-            if (result.IsSuccessStatusCode)
-            {
-                var readTask = result.Content.ReadAsAsync<List<Order>>();
-                readTask.Wait();
-
-                var resultingOrders = readTask.Result;
-
-                return View(resultingOrders);
-            }*/
-            #endregion
-
+            
+            if (receivedOrders != default) return View(sortedOrders); else return StatusCode(500);
+            //return resultView;
+            
             return StatusCode(500);
         }
 
+        [Route("orders/details")]
+        public async Task<IActionResult> ViewOrderDetails(Order order)
+        {
+            if (CurrentCustomer == null)
+            {
+                return await LoginRedirectActionTask;
+            }
+
+            string request = $"order/products/get/{order}";
+            var receivedOrderLineItems = await this.GetDataAsync<List<OrderLineItem>>(request);
+            string productsRequest = $"product/get";
+            var receivedProducts = await this.GetDataAsync<List<Product>>(productsRequest);
+
+
+            foreach (OrderLineItem oli in receivedOrderLineItems)
+            {
+                oli.Product = receivedProducts.Single(p => p.Id == oli.ProductId);
+            }
+
+            return View(receivedOrderLineItems);
+        }
 
 
         [Route("sample/AllCustomers")]
@@ -129,6 +139,7 @@ namespace IceShopWeb.Controllers
 
         }
 
+        [Route("get/{email}")]
         public async Task<IActionResult> GetCustomerByEmail(string email)
         {
             if (CurrentCustomer == null) return LoginRedirectAction;
@@ -160,6 +171,7 @@ namespace IceShopWeb.Controllers
 
         // This view is to prompt for the information to be added. It's not a submission.
         // [HttpGet]
+        [Route("add")]
         public ViewResult AddCustomer()
         {
 
@@ -167,6 +179,7 @@ namespace IceShopWeb.Controllers
         }
 
         [HttpPost]
+        [Route("add")]
         public IActionResult AddCustomer(Customer customer)
         {
             // TODO: Use Customer MVC Model instead of DB Model

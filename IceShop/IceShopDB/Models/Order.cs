@@ -8,7 +8,7 @@ namespace IceShopDB.Models
     public class Order : IStorableInRepo
     {
 
-        internal Order(int customerId, int locationId, string address, double Subtotal, double timeOrderWasPlaced)
+        public Order(int customerId, int locationId, string address, double Subtotal, double timeOrderWasPlaced)
         {
             CustomerId = customerId;
             Address = address;
@@ -61,10 +61,7 @@ namespace IceShopDB.Models
 
         public List<OrderLineItem> OrderLineItems { get; set; }
 
-        public void AddLineItemToOrder(OrderLineItem addedLineItem)
-        {
-            OrderLineItems.Add(addedLineItem);
-        }
+        
 
         [Column("Subtotal")]
         public double Subtotal { get; set; }
@@ -79,17 +76,6 @@ namespace IceShopDB.Models
 
         [Column("finishedtime_posix")]
         public double TimeOrderWasFulfilled { get; set; }//TODO: What the hell do I do about fulfillment?
-
-        [NotMapped]
-        public bool IsComplete
-        {
-            get
-            {
-                if (TimeOrderWasFulfilled > TimeOrderWasPlaced) return true; else return false;
-
-
-            }
-        }
 
 
     }

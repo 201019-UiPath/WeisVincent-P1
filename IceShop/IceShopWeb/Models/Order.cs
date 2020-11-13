@@ -1,14 +1,36 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace IceShopWeb.Models
 {
-    [Table("Orders")]
     public class Order
     {
 
-        // TODO: Review constructor for Order class, you left good stuff in it
+        internal Order()
+        {
+
+        }
+        
+        /// <summary>
+        /// This constructor should be used for when JSON data is received.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="customerId"></param>
+        /// <param name="locationId"></param>
+        /// <param name="address"></param>
+        /// <param name="Subtotal"></param>
+        /// <param name="timeOrderWasPlaced"></param>
+        [JsonConstructor]
+        internal Order(int id, int customerId, int locationId, string address, double Subtotal, double timeOrderWasPlaced, double timeOrderWasFulfilled)
+        {
+            Id = id;
+            CustomerId = customerId;
+            Address = address;
+            LocationId = locationId;
+            this.Subtotal = Subtotal;
+            TimeOrderWasPlaced = timeOrderWasPlaced;
+            TimeOrderWasFulfilled = timeOrderWasFulfilled;
+        }
 
         internal Order(int customerId, int locationId, string address, double Subtotal, double timeOrderWasPlaced)
         {
@@ -41,10 +63,10 @@ namespace IceShopWeb.Models
 
 
 
-        [Key]
+        
         public int Id { get; set; }
 
-        [ForeignKey("Customer")]
+        
         public int CustomerId { get; set; }
 
         /// <summary>
@@ -52,24 +74,19 @@ namespace IceShopWeb.Models
         /// </summary>
         public Customer Customer { get; set; }
 
-        [Column("Address")]
+        
         public string Address { get; set; }
 
 
 
 
-        [ForeignKey("Location")]
+        
         public int LocationId { get; set; }
         public Location Location { get; set; }
 
         public List<OrderLineItem> OrderLineItems { get; set; }
 
-        public void AddLineItemToOrder(OrderLineItem addedLineItem)
-        {
-            OrderLineItems.Add(addedLineItem);
-        }
-
-        [Column("Subtotal")]
+        
         public double Subtotal { get; set; }
 
 
@@ -77,13 +94,33 @@ namespace IceShopWeb.Models
         /// This field represents the time the order was placed in Linux Epoch format. Should be in UTC, and converted when displayed in UI.
         /// Methods responsible for this should be in the DateTimeUtility class of the IceShopLib assembly.
         /// </summary>
-        [Column("placedtime_posix")]
+        
         public double TimeOrderWasPlaced { get; set; }
 
-        [Column("finishedtime_posix")]
+        public string TimeOrderWasPlacedAsString
+        {
+            get
+            {
+                if (TimeOrderWasPlaced > 0)
+                {
+                    return DateTimeUtility.GetDateTimeFromUnixEpochAsDouble(TimeOrderWasPlaced).ToShortDateString();
+                } else return "";
+            }
+        }
+        
         public double TimeOrderWasFulfilled { get; set; }//TODO: What the hell do I do about fulfillment?
+        public string TimeOrderWasFulfilledAsString
+        {
+            get
+            {
+                if (TimeOrderWasFulfilled > 0)
+                {
+                    return DateTimeUtility.GetDateTimeFromUnixEpochAsDouble(TimeOrderWasPlaced).ToShortDateString();
+                }
+                else return "";
+            }
+        }
 
-        [NotMapped]
         public bool IsComplete
         {
             get

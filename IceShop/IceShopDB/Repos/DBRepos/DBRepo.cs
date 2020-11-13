@@ -47,7 +47,7 @@ namespace IceShopDB.Repos.DBRepos
 
         public List<Order> GetAllOrdersForCustomer(int customerId)
         {
-            return context.Orders.Include("Location").Include("OrderLineItems").Where(o => o.CustomerId == customerId).ToList();
+            return context.Orders/*.Include("Location")/*.Include("OrderLineItems")*/.Where(o => o.CustomerId == customerId).ToList();
         }
 
         public Task<Customer> GetCustomerByEmailAsync(string email)
@@ -216,6 +216,16 @@ namespace IceShopDB.Repos.DBRepos
 
 
         #region Order methods
+
+        public Order GetOrderById(int id)
+        {
+            return context.Orders.Single(o => o.Id == id);
+        }
+
+        public async Task<Order> GetOrderByIdAsync(int id)
+        {
+            return await context.Orders.SingleAsync(o => o.Id == id);
+        }
 
         public void AddOrder(Order order)
         {

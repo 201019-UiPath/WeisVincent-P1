@@ -157,7 +157,7 @@ namespace IceShopBL
 
             foreach (OrderLineItem lineItem in orderLineItems)
             {
-                newOrder.AddLineItemToOrder(lineItem);
+                newOrder.OrderLineItems.Add(lineItem);
             }
             
             // Update Database with the new order, new order line items, and removal of Inventory line items

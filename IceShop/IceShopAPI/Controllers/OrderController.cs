@@ -18,12 +18,13 @@ namespace IceShopAPI.Controllers
             _orderService = orderService;
         }
 
-        [HttpGet("products/get/{order}")]
+        [HttpGet("products/get/{orderId}")]
         [Produces("application/json")]
-        public IActionResult GetAllProductsInOrder(Order order)
+        public IActionResult GetAllProductsInOrder(int orderId)
         {
             try
             {
+                var order = _orderService.GetOrderById(orderId);
                 return Ok(_orderService.GetAllProductsInOrder(order));
             }
             catch (Exception)

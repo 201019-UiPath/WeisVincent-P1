@@ -9,6 +9,6 @@ namespace IceShopBL
         void AddOrderToRepo(Order order);
         List<OrderLineItem> GetAllProductsInOrder(Order order);
         Task<List<OrderLineItem>> GetAllProductsInOrderAsync(Order order);
-        
+        Order GetOrderById(int orderId);
     }
 }

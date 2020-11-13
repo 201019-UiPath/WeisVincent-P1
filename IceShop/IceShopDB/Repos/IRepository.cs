@@ -1,3 +1,5 @@
+using IceShopDB.Models;
+
 namespace IceShopDB.Repos
 {
     /// <summary>
@@ -9,5 +11,6 @@ namespace IceShopDB.Repos
         void SaveChangesAsync();
 
         void SaveChanges();
+        
     }
 }
