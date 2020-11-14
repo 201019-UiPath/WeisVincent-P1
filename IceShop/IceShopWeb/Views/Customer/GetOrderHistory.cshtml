@@ -13,14 +13,10 @@
     <h1>Order History</h1>
 
     <h4>Sort orders...</h4>
-    @Html.ActionLink("By Date Placed, ascending.", "GetOrderHistory", "Customer", new { sortBy = 0 })
-    @Html.ActionLink("By Date Placed, descending.", "GetOrderHistory", "Customer", new { sortBy = 1 })
-    @Html.ActionLink("By Price, ascending.", "GetOrderHistory", "Customer", new { sortBy = 2 })
-    @Html.ActionLink("By Price, descending.", "GetOrderHistory", "Customer", new { sortBy = 3 })
-    <input type="button" value="Sort Order History by " onclick="window.location.href='@Url.ActionLink(action:"GetOrderHistory", controller:"Customer",0)'" />
-    <input type="button" value="Sort Order History by " onclick="window.location.href='@Url.ActionLink(action:"GetOrderHistory", controller:"Customer",1)'" />
-    <input type="button" value="Sort Order History by " onclick="window.location.href='@Url.ActionLink(action:"GetOrderHistory", controller:"Customer",2)'" />
-    <input type="button" value="Sort Order History by " onclick="window.location.href='@Url.ActionLink(action:"GetOrderHistory", controller:"Customer",3)'" />
+    @Html.ActionLink("By Date Placed, descending.", "GetOrderHistory", "Customer", new { sortBy = 0 })
+    @Html.ActionLink("By Date Placed, ascending.", "GetOrderHistory", "Customer", new { sortBy = 1 })
+    @Html.ActionLink("By Price, descending.", "GetOrderHistory", "Customer", new { sortBy = 2 })
+    @Html.ActionLink("By Price, ascending.", "GetOrderHistory", "Customer", new { sortBy = 3 })
     
     <table class="table">
         <thead>

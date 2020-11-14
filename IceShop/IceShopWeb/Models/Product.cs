@@ -8,14 +8,11 @@ namespace IceShopWeb.Models
     // TODO: Figure out how to make this enum work with the PostgreSQL DB
     public enum ProductType
     {
-        Physical, Cognitive, Emotional, Metaphysical
+        Water, Slush, Soft, Hard
     }
     public class Product
     {
-
-        //TODO: Make constructor for Product.
-
-
+        public Product() { }
 
         public Product(string name, double price, ProductType typeOfProduct, string description)
         {
@@ -25,22 +22,16 @@ namespace IceShopWeb.Models
             Description = description;
         }
 
-        [Key]
         public int Id { get; set; }
 
-        [Column("Name")]
         public string Name { get; set; }
 
-        [Column("Price")]
         public double Price { get; set; }
 
-        [Column("Type")]
         public ProductType TypeOfProduct { get; set; }
 
-        [NotMapped]
         public string TypeOfProductAsString { get { return Enum.GetName(typeof(ProductType), TypeOfProduct); } }
 
-        [Column("Description")]
         public string Description { get; set; }
 
 
@@ -50,15 +41,7 @@ namespace IceShopWeb.Models
         //public List<InventoryLineItem> LocationsWithProduct { get; set; }
 
 
-
         //public List<LocationStockedProduct> LocationsStockedAt;
-
-
-
-
-
-
-
 
 
     }

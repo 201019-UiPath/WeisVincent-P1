@@ -7,7 +7,10 @@ namespace IceShopAPI.DTO
 {
     public class ILIDTO
     {
+        public ILIDTO()
+        {
 
+        }
         
         public int LocationId { get; set; }
         //public LocationDTO Location { get; set; }

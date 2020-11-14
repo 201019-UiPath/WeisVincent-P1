@@ -223,6 +223,11 @@ namespace IceShopDB.Repos.DBRepos
             return context.Orders.Single(o => o.Id == id);
         }
 
+        public Order GetOrderByDateTime(double dateTimeDouble)
+        {
+            return context.Orders.Single(o => o.TimeOrderWasPlaced == dateTimeDouble);
+        }
+
         public async Task<Order> GetOrderByIdAsync(int id)
         {
             return await context.Orders.SingleAsync(o => o.Id == id);
@@ -232,9 +237,14 @@ namespace IceShopDB.Repos.DBRepos
         {
             context.Orders.Add(order);
         }
-        public void AddOrderAsync(Order order)
+        public async void AddOrderAsync(Order order)
         {
-            context.Orders.AddAsync(order);
+            await context.Orders.AddAsync(order);
+        }
+
+        public void AddOrderLineItem(OrderLineItem oli)
+        {
+            context.OrderLineItems.Add(oli);
         }
 
         public void RemoveInventoryLineItemFromLocation(InventoryLineItem lineItem)
@@ -289,5 +299,7 @@ namespace IceShopDB.Repos.DBRepos
         {
             context.Products.Add(product);
         }
+
+        
     }
 }

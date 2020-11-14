@@ -69,10 +69,11 @@ namespace IceShopAPI.Controllers
 
         [HttpGet("orders/get/{location}")]
         [Produces("application/json")]
-        public IActionResult GetOrdersAtLocation(Location location)
+        public IActionResult GetOrdersAtLocation(LocationDTO locationDTO)
         {
             try
             {
+                var location = _mapper.Map<Location>(locationDTO);
                 return Ok(_locationService.GetAllOrdersForLocation(location));
             }
             catch (Exception)
@@ -84,10 +85,11 @@ namespace IceShopAPI.Controllers
 
         [HttpPost("stock/add/{inventorylineitem}")]
         [Consumes("application/json")]
-        public IActionResult AddLineItemToStock(InventoryLineItem lineItem)
+        public IActionResult AddLineItemToStock(ILIDTO lineItemDTO)
         {
             try
             {
+                var lineItem = _mapper.Map<InventoryLineItem>(lineItemDTO);
                 _locationService.AddInventoryLineItemInRepo(lineItem);
                 return CreatedAtAction("AddLineItemToStock", lineItem);
             }
@@ -98,14 +100,16 @@ namespace IceShopAPI.Controllers
             }
         }
 
-        [HttpPut("stock/update/{inventorylineitem}")]
+        [HttpPut("stock/update")]
         [Consumes("application/json")]
-        public IActionResult UpdateLineItemInStock(InventoryLineItem lineItem)
+        public IActionResult UpdateLineItemInStock(ILIDTO lineItemDTO)
         {
             try
             {
+                var lineItem = _mapper.Map<InventoryLineItem>(lineItemDTO);
+
                 _locationService.UpdateInventoryLineItemInRepo(lineItem);
-                return AcceptedAtAction("UpdateLineItemInStock", lineItem);
+                return AcceptedAtAction("UpdateLineItemInStock", lineItemDTO);
             }
             catch (Exception)
             {
@@ -114,14 +118,15 @@ namespace IceShopAPI.Controllers
             }
         }
 
-        [HttpPut("stock/remove/{inventorylineitem}")]
+        [HttpPut("stock/remove")]
         [Consumes("application/json")]
-        public IActionResult RemoveLineItemInStock(InventoryLineItem lineItem)
+        public IActionResult RemoveLineItemInStock(InventoryLineItem lineItemDTO)
         {
             try
             {
+                var lineItem = _mapper.Map<InventoryLineItem>(lineItemDTO);
                 _locationService.RemoveInventoryLineItemInRepo(lineItem);
-                return CreatedAtAction("RemoveLineItemInStock", lineItem);
+                return AcceptedAtAction("RemoveLineItemInStock", lineItemDTO);
             }
             catch (Exception)
             {

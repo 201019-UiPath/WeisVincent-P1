@@ -8,7 +8,7 @@ namespace IceShopAPI.DTO
     public class UserDTO
     {
 
-
+        public UserDTO() { }
         public UserDTO(string name, string email, string password)
         {
             Name = name;

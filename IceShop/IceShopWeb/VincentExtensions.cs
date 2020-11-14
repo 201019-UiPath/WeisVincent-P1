@@ -29,7 +29,7 @@ namespace IceShopWeb
 
                 return resultData;
             }
-            else return default;
+            else throw new HttpRequestException(result.StatusCode.ToString());
         }
 
         public static T GetData<T>(string request)
@@ -53,14 +53,24 @@ namespace IceShopWeb
             else return default;
         }
 
-        public async static Task<bool> PostDataAsync<T>(this Controller controller, string request, T data)
+        public async static Task PostDataAsync<T>(this Controller controller, string request, T data)
         {
             using var client = MakeInsecureHttpClient();
 
             Task<HttpResponseMessage> response = client.PostAsJsonAsync(request, data);
 
             HttpResponseMessage result = await response;
-            if (result.IsSuccessStatusCode) return true; else return false;
+            if (result.IsSuccessStatusCode) return; else throw new HttpRequestException(result.StatusCode.ToString());
+        }
+
+        public async static Task PutDataAsync<T>(this Controller controller, string request, T data)
+        {
+            using var client = MakeInsecureHttpClient();
+
+            Task<HttpResponseMessage> response = client.PutAsJsonAsync(request, data);
+
+            HttpResponseMessage result = await response;
+            if (result.IsSuccessStatusCode) return; else throw new HttpRequestException(result.StatusCode.ToString());
         }
 
 

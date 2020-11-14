@@ -8,6 +8,8 @@ namespace IceShopAPI.DTO
 {
     public class ProductDTO
     {
+        public ProductDTO() { }
+
         public ProductDTO(string name, double price, ProductType typeOfProduct, string description)
         {
             Name = name;

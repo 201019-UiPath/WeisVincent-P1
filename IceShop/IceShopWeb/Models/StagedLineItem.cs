@@ -12,6 +12,12 @@ namespace IceShopWeb.Models
 
         public Product Product;
         public int Quantity;
+
+        public StagedLineItem()
+        {
+
+        }
+
         public StagedLineItem(Product product, int quantity, InventoryLineItem affectedInventoryLineItem)
         {
             Product = product;

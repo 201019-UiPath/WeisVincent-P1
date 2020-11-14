@@ -10,7 +10,10 @@ namespace IceShopAPI.DTO
 
         //[Key]
         //public int Id { get; set; }
+        public OLIDTO()
+        {
 
+        }
         
         public int OrderId { get; set; }
         public OrderDTO Order { get; set; }

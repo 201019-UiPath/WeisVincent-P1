@@ -2,6 +2,7 @@
 using IceShopDB.Repos;
 using Serilog;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace IceShopBL.Services
@@ -24,6 +25,19 @@ namespace IceShopBL.Services
             Repo = repo;
         }
 
+        public void AddOrderLineItemToRepo(OrderLineItem oli)
+        {
+            var existingOrderedProducts = Repo.GetOrderedProductsInAnOrder(oli.OrderId);
+            if (existingOrderedProducts.Exists(li => li.ProductId == oli.ProductId))
+            {
+                existingOrderedProducts.First(li => li.ProductId == oli.ProductId).ProductQuantity += oli.ProductQuantity;
+            } else
+            {
+                Repo.AddOrderLineItem(oli);
+            }
+            Repo.SaveChanges();
+        }
+
         public void AddOrderToRepo(Order order)
         {
             Log.Logger.Information("Adding a new order entry to the repository..");
@@ -42,6 +56,11 @@ namespace IceShopBL.Services
         {
             Log.Logger.Information("Retrieving all products associated with an order asynchronoously..");
             return Repo.GetOrderedProductsInAnOrderAsync(order.Id);
+        }
+
+        public Order GetOrderByDateTime(double dateTimeDouble)
+        {
+            return Repo.GetOrderByDateTime(dateTimeDouble);
         }
 
         public Order GetOrderById(int orderId)

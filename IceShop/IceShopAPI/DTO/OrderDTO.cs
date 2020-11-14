@@ -8,6 +8,8 @@ namespace IceShopAPI.DTO
     public class OrderDTO
     {
 
+        public OrderDTO() { }
+
         public int Id { get; set; }
 
         public int CustomerId { get; set; }

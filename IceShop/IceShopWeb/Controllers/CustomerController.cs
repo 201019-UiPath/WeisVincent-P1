@@ -14,27 +14,17 @@ namespace IceShopWeb.Controllers
         const string url = "https://localhost:5001/api/";
 
         private Customer CurrentCustomer {
-            get {
-                return HttpContext.Session.Get<Customer>("CurrentCustomer");
-            }
-            set {
-                HttpContext.Session.Set("CurrentCustomer", value);
-            }
+            get { return HttpContext.Session.Get<Customer>("CurrentCustomer");}
+            set { HttpContext.Session.Set("CurrentCustomer", value);}
         }
 
-        private List<StagedLineItem> CurrentCart
+        private List<InventoryLineItem> CurrentCart
         {
-            get
-            {
-                return HttpContext.Session.Get<List<StagedLineItem>>("CurrentCart");
-            }
-            set
-            {
-                HttpContext.Session.Set("CurrentCart", value);
-            }
+            get { return HttpContext.Session.Get<List<InventoryLineItem>>("CurrentCart");}
+            set { HttpContext.Session.Set<List<InventoryLineItem>>("CurrentCart", value);}
         }
 
-        private Location CurrentLocation { get { return HttpContext.Session.Get<Location>("CurrentLocation"); } set { HttpContext.Session.Set<Location>("CurrentLocation", value); } }
+        private Location CurrentLocation { get { return HttpContext.Session.Get<Location>("CurrentLocation"); } set { CurrentCart = null; HttpContext.Session.Set<Location>("CurrentLocation", value); } }
 
         private readonly IActionResult LoginRedirectAction;
         private readonly Task<IActionResult> LoginRedirectActionTask;
@@ -241,26 +231,29 @@ namespace IceShopWeb.Controllers
         {
             if (CurrentLocation == null) {
                 string requestLocations = $"location/get";
-
                 var locations = await this.GetDataAsync<List<Location>>(requestLocations);
-
                 CurrentLocation = locations.Where(l=>l.Id == locationId).First();
             };
 
             if (CurrentCustomer == null) return await LoginRedirectActionTask;
 
-            string request = $"location/stock/get/{locationId}";
+            if (CurrentCart == null) CurrentCart = new List<InventoryLineItem>();
 
+            string request = $"location/stock/get/{locationId}";
             var stock = await this.GetDataAsync<List<InventoryLineItem>>(request);
 
-            return View(stock);
+            var processedStock = ReturnStockWithoutCartItems(stock, CurrentCart);
+
+            ViewData["LocationName"] = CurrentLocation.Name;
+            ViewData["CartData"] = CurrentCart;
+
+            return View(processedStock);
         }
 
         [Route("order/cart/view")]
         public async Task<IActionResult> ViewCart()
         {
             if (CurrentCustomer == null) return await LoginRedirectActionTask;
-
             if (CurrentCart != null) return View(CurrentCart);
 
             ModelState.AddModelError(string.Empty, "Your cart is empty.");
@@ -273,27 +266,160 @@ namespace IceShopWeb.Controllers
         public async Task<IActionResult> AddItemToCart(InventoryLineItem ili)
         {
             if (CurrentCustomer == null) return await LoginRedirectActionTask;
+            if (CurrentCart == null) CurrentCart = new List<InventoryLineItem>();
 
-            if (CurrentCart == null) CurrentCart = new List<StagedLineItem>();
+            InventoryLineItem processedILI = await GetProductForILIAsync(ili);
+
+            List<InventoryLineItem> tempCart = CurrentCart;
 
             try
             {
-                try
-                {
-                    CurrentCart.First(sli => sli.affectedInventoryLineItem.Equals(ili)).Quantity += 1;
-                } catch (InvalidOperationException)
-                {
-                    StagedLineItem newSLI = new StagedLineItem(ili.Product, 1, ili);
-                    CurrentCart.Add(newSLI);
-                }
-               
-            } catch (Exception)
-            {
-                ModelState.AddModelError(string.Empty, "Could not add item to cart.");
+                tempCart.Where(sli => sli.ProductId == processedILI.ProductId).First().ProductQuantity += 1;
             }
+            catch (InvalidOperationException e)
+            {
+                var message = e.Message;
+                StagedLineItem newSLI = new StagedLineItem(processedILI.Product, 1, processedILI);
+                InventoryLineItem newILI = new InventoryLineItem(CurrentLocation, processedILI.Product, 1);
+                tempCart.Add(newILI);
+            }
+            CurrentCart = tempCart;
 
             return RedirectToAction("ViewInventoryAtLocation", new { locationId = CurrentLocation.Id });
 
+        }
+
+        [Route("order/cart/remove")]
+        public async Task<IActionResult> RemoveItemFromCart(InventoryLineItem ili)
+        {
+            if (CurrentCustomer == null) return await LoginRedirectActionTask;
+            if (CurrentCart == null) CurrentCart = new List<InventoryLineItem>();
+
+            InventoryLineItem processedILI = await GetProductForILIAsync(ili);
+            List<InventoryLineItem> tempCart = CurrentCart;
+
+            try
+            {
+                tempCart.Where(sli => sli.ProductId == processedILI.ProductId).First().ProductQuantity -= 1;
+                tempCart.RemoveAll(sli => sli.ProductQuantity < 1);
+            }
+            catch (InvalidOperationException e) {// TODO: What happens if removing an item doesn't work here?
+            }
+            CurrentCart = tempCart;
+            return RedirectToAction("ViewInventoryAtLocation", new { locationId = CurrentLocation.Id });
+        }
+
+        [Route("order/submit")]
+        public async Task<IActionResult> SubmitOrder()
+        {
+            if (CurrentCustomer == null) return await LoginRedirectActionTask;
+            if (CurrentCart == null) return await LoginRedirectActionTask;//TODO: Redirect properly.
+
+            // Arrange data needed to submit the order.
+            List<InventoryLineItem> tempCart = CurrentCart;
+            List<OrderLineItem> orderItems = new List<OrderLineItem>();
+
+            // Get the time of the order.
+            double timeNowAsDouble = DateTimeUtility.GetUnixEpochAsDouble(DateTime.Now);
+
+            // Get the total of the order.
+            double total = 0.0;
+            tempCart.ForEach(cartItem => total += cartItem.Product.Price * cartItem.ProductQuantity);
+
+            // Generate a new order, without an ID.
+            Order newOrder = new Order(CurrentCustomer.Id, CurrentLocation.Id, CurrentCustomer.Address, total, timeNowAsDouble);
+
+            // Submit the order without the ID.
+            var postOrderRequest = $"order/add";
+            await this.PostDataAsync(postOrderRequest, newOrder);
+
+            // Get the order back so we can have the ID.
+            var getOrderRequest = $"order/get?dateTimeDouble={timeNowAsDouble}";
+            var retrievedRedundantOrder = await this.GetDataAsync<Order>(getOrderRequest);
+
+            // Make the order items from the cart items, using the fetched order Id.
+            foreach(InventoryLineItem cartItem in tempCart)
+            {
+                var newOrderItem = new OrderLineItem(retrievedRedundantOrder.Id, cartItem.ProductId, cartItem.ProductQuantity);
+                orderItems.Add(newOrderItem);
+            }
+
+
+
+            // Submit the order line items.
+            foreach (OrderLineItem oli in orderItems)
+            {
+                var postOrderLineItemRequest = $"order/lineitem/add";
+                await this.PostDataAsync(postOrderLineItemRequest, oli);
+            }
+
+            string request = $"location/stock/get/{CurrentLocation.Id}";
+            var stock = await this.GetDataAsync<List<InventoryLineItem>>(request);
+
+            var processedStock = ReturnStockWithoutCartItems(stock, tempCart);
+
+            foreach (InventoryLineItem ili in processedStock)
+            {
+                string putStockRequest= $"location/stock/update";
+                await this.PutDataAsync(putStockRequest, ili);
+            }
+
+            // Clear all relevant data.
+            tempCart.Clear();
+            CurrentCart = null;
+
+            // TODO: Show successful order submission.
+            return RedirectToAction("Index");
+            
+        }
+
+        private List<InventoryLineItem> ReturnStockWithoutCartItems(List<InventoryLineItem> stock, List<InventoryLineItem> cart)
+        {
+            var processedStock = ProcessInventory(stock);
+
+            var tempCart = cart;
+
+            foreach (InventoryLineItem ili in processedStock)
+            {
+                Predicate<InventoryLineItem> predicate = new Predicate<InventoryLineItem>(
+                    cartItem => cartItem.LocationId == ili.LocationId && cartItem.ProductId == ili.ProductId);
+
+                Func<InventoryLineItem, bool> standard = new Func<InventoryLineItem, bool>(predicate);
+
+                if (tempCart.Exists(predicate))
+                {
+                    var matchingCartItem = tempCart.First(standard);
+                    ili.ProductQuantity -= matchingCartItem.ProductQuantity;
+                };
+            }
+
+            processedStock.RemoveAll(ili => ili.ProductQuantity < 1);
+            return processedStock;
+        }
+
+        private List<InventoryLineItem> ProcessInventory(List<InventoryLineItem> stockToProcess)
+        {
+            var getProcessedStock = new List<Task<InventoryLineItem>>();
+            var processedStock = new List<InventoryLineItem>();
+
+            foreach (InventoryLineItem ili in stockToProcess)
+            {
+                var getProcessedILI = GetProductForILIAsync(ili);
+                getProcessedStock.Add(getProcessedILI);
+            }
+            //getProcessedStock.ForEach(t => t.Start());
+            getProcessedStock.ForEach(t => processedStock.Add(t.Result));
+            return processedStock;
+        }
+
+
+        private async Task<InventoryLineItem> GetProductForILIAsync(InventoryLineItem ili)
+        {
+            string productsRequest = $"product/get";
+            var receivedProducts = await this.GetDataAsync<List<Product>>(productsRequest);
+
+            ili.Product = receivedProducts.First(p => p.Id == ili.ProductId);
+            return ili;
         }
 
     }

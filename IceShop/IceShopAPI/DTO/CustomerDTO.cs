@@ -8,6 +8,8 @@ namespace IceShopAPI.DTO
     public class CustomerDTO : UserDTO
     {
 
+        public CustomerDTO() { }
+
         /// <summary>
         /// Constructor for new customers
         /// </summary>

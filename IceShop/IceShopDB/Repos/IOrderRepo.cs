@@ -16,7 +16,9 @@ namespace IceShopDB.Repos
 
         void AddOrderAsync(Order order);
 
+        void AddOrderLineItem(OrderLineItem oli);
 
+        Order GetOrderByDateTime(double dateTimeDouble);
         Order GetOrderById(int orderId);
 
 

@@ -8,6 +8,8 @@ namespace IceShopAPI.DTO
     public class LocationDTO
     {
 
+        public LocationDTO() { }
+
         public LocationDTO(string name, string address)
         {
             Name = name;

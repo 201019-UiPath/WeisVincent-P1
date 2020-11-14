@@ -55,5 +55,15 @@ namespace IceShopDB.Repos.FileRepos
         {
             throw new NotImplementedException();
         }
+
+        public Order GetOrderByDateTime(double dateTimeDouble)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddOrderLineItem(OrderLineItem oli)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

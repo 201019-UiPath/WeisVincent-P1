@@ -31,7 +31,7 @@ namespace IceShopAPI.Controllers
             try
             {
                 var order = _orderService.GetOrderById(orderId);
-                var productDTOs = _mapper.Map<List<OrderDTO>>(_orderService.GetAllProductsInOrder(order));
+                var productDTOs = _mapper.Map<List<OLIDTO>>(_orderService.GetAllProductsInOrder(order));
 
                 return Ok(productDTOs);
             }
@@ -42,15 +42,57 @@ namespace IceShopAPI.Controllers
             }
         }
 
-        [HttpPost("add/{order}")]
+        [HttpPost("add")]
         [Produces("application/json")]
-        public IActionResult AddOrder(Order order)
+        public IActionResult AddOrder(OrderDTO orderDTO)
         {
             try
             {
+                var order = _mapper.Map<Order>(orderDTO);
                 _orderService.AddOrderToRepo(order);
-                return CreatedAtAction("AddOrder", order);
+
+                var fetchedOrder = _orderService.GetOrderByDateTime(order.TimeOrderWasPlaced);
+
+                var mappedOrder = _mapper.Map<OrderDTO>(fetchedOrder);
+                return CreatedAtAction("AddOrder", fetchedOrder);
             } catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("lineitem/add")]
+        [Produces("application/json")]
+        public IActionResult AddOrderLineItem(OLIDTO oli)
+        {
+            try
+            {
+                var orderLineItem = _mapper.Map<OrderLineItem>(oli);
+
+                _orderService.AddOrderLineItemToRepo(orderLineItem);
+                    
+
+                return CreatedAtAction("AddOrder", orderLineItem);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("get")]
+        [Produces("application/json")]
+        public IActionResult GetOrderByDateTime(double dateTimeDouble)
+        {
+            try
+            {
+                var order = _orderService.GetOrderByDateTime(dateTimeDouble);
+
+                var mappedOrder = _mapper.Map<OrderDTO>(order);
+
+                return Ok( mappedOrder);
+            }
+            catch (Exception)
             {
                 return BadRequest();
             }
