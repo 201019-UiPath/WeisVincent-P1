@@ -8,7 +8,7 @@ namespace IceShopWeb.Models
     {
 
 
-        internal Customer() : base()
+        public Customer()
         {
 
         }

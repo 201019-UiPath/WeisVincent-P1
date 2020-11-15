@@ -10,14 +10,24 @@ namespace IceShopWeb
 {
     public static class VincentExtensions
     {
+        private static HttpClient httpClient;
+
+        public static HttpClient HttpClient
+        {
+            get
+            {
+                if (httpClient == null)
+                {
+                    httpClient = MakeInsecureHttpClient();
+                    return httpClient;
+                }
+                else return httpClient;
+            }
+        }
 
         public async static Task<T> GetDataAsync<T>(this Controller controller, string request)
         {
-            using var client = MakeInsecureHttpClient();
-
-            Task<HttpResponseMessage> response = client.GetAsync(request);
-
-            //response.Wait();
+            Task<HttpResponseMessage> response = HttpClient.GetAsync(request);
 
             HttpResponseMessage result = await response;//.Result;
             if (result.IsSuccessStatusCode)
@@ -34,9 +44,7 @@ namespace IceShopWeb
 
         public static T GetData<T>(string request)
         {
-            using var client = MakeInsecureHttpClient();
-
-            Task<HttpResponseMessage> response = client.GetAsync(request);
+            Task<HttpResponseMessage> response = HttpClient.GetAsync(request);
 
             response.Wait();
 
@@ -50,14 +58,12 @@ namespace IceShopWeb
 
                 return resultData;
             }
-            else return default;
+            else throw new HttpRequestException(result.StatusCode.ToString());
         }
 
         public async static Task PostDataAsync<T>(this Controller controller, string request, T data)
         {
-            using var client = MakeInsecureHttpClient();
-
-            Task<HttpResponseMessage> response = client.PostAsJsonAsync(request, data);
+            Task<HttpResponseMessage> response = HttpClient.PostAsJsonAsync(request, data);
 
             HttpResponseMessage result = await response;
             if (result.IsSuccessStatusCode) return; else throw new HttpRequestException(result.StatusCode.ToString());
@@ -65,15 +71,13 @@ namespace IceShopWeb
 
         public async static Task PutDataAsync<T>(this Controller controller, string request, T data)
         {
-            using var client = MakeInsecureHttpClient();
-
-            Task<HttpResponseMessage> response = client.PutAsJsonAsync(request, data);
+            Task<HttpResponseMessage> response = HttpClient.PutAsJsonAsync(request, data);
 
             HttpResponseMessage result = await response;
             if (result.IsSuccessStatusCode) return; else throw new HttpRequestException(result.StatusCode.ToString());
         }
 
-
+        
 
         public static HttpClient MakeInsecureHttpClient()
         {

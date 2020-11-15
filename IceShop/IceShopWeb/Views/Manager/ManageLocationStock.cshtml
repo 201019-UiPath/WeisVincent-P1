@@ -3,18 +3,30 @@
 @{
     var inventoryLineItems = Model;
 
-    var Cart = ViewData["CartData"] as List<InventoryLineItem>;
+    var unstockedProducts = ViewData["UnstockedProducts"] as List<Product>;
 }
 
+<div class="text-center justify-content-center">
+    <h1>Products at @ViewData["LocationName"]</h1>
+    <div class="text-center container card-deck">
+        @{
+            foreach (var ili in inventoryLineItems)
+            {
 
-<h1>Products at @ViewData["LocationName"]</h1>
-<div class="text-center container card-deck">
-    @{
-        foreach (var ili in inventoryLineItems)
-        {
-
-            @await Html.PartialAsync($"_StockItemInfoInCard", ili);
+                @await Html.PartialAsync($"_StockItemInfoInCard", ili);
+            }
         }
-    }
+    </div>
+    <h2>Unstocked Products</h2>
+    <div class="text-center container card-deck">
+        @{
+            foreach (var product in unstockedProducts)
+            {
+                @await Html.PartialAsync($"_ProductInfoInCard", product);
+            }
+        }
+    </div>
+    <button class="btn btn-primary text-white" onclick="location.href='@Url.Action("AddBrandNewProduct", "Manager")'">
+        Add a brand new product.
+    </button>
 </div>
-

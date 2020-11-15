@@ -17,7 +17,6 @@ namespace IceShopAPI.DTO
 
         
         public int ProductId { get; set; }
-        public ProductDTO Product { get; set; }
 
         public int ProductQuantity { get; set; }
 

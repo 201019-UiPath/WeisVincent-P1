@@ -29,7 +29,9 @@
     }
 </div>
 
-@Html.ActionLink("Submit Order.", "SubmitOrder", "Customer")
-    
+@*@Html.ActionLink("Submit Order.", "SubmitOrder", "Customer")*@
+<button class="btn btn-primary text-white" onclick="location.href='@Url.Action("SubmitOrder", "Customer")'">
+    Submit Order.
+</button>
     
 

@@ -14,24 +14,29 @@
 }
 
 
+<div class="text-center justify-content-center">
+    <h1>@ViewData["Title"]</h1>
 
-<h1>@ViewData["Title"]</h1>
-
-<h4>Login</h4>
-<h5 class='text-danger text-capitalize'>@ViewData["Redirect"]</h5>
-@{ if (writeRedirectError)
-    { @Html.DisplayText(redirectString)} }
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Login">
-            @*<input type="hidden" asp-for="Id" />*@
-            @await Html.PartialAsync("_AuthFormElements", Model)
-        </form>
+    <h4>Login</h4>
+    <h5 class='text-danger text-capitalize'>@ViewData["Redirect"]</h5>
+    @{ if (writeRedirectError)
+        { @Html.DisplayText(redirectString)} }
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Login">
+                @*<input type="hidden" asp-for="Id" />*@
+                @await Html.PartialAsync("_AuthFormElements", Model)
+            </form>
+        </div>
     </div>
-</div>
 
-<div>
-    @Html.ActionLink("Sign up.", "AddManager", "Manager")
-    @Html.ActionLink("Login as Customer.", "Login", "Home")
+    <div>
+        <button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("AddManager", "Manager")'">
+            Sign up.
+        </button>
+        <button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("Login", "Home")'">
+            Login as Customer.
+        </button>
+    </div>
 </div>

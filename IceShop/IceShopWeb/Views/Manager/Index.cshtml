@@ -5,9 +5,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     // TODO: Populate this view with options for a customer who has just logged in.
 }
+<div class="text-center justify-content-center">
+    <h2>Welcome, @CurrentManager.Name!</h2>
 
-<h2>Welcome, @CurrentManager.Name!</h2>
-
-<h4>What would you like to do?</h4>
-@Html.ActionLink(linkText: "View Location Order History", actionName: "GetLocationOrderHistory", controllerName: "Manager", new { locationId = Model.Id })
-@Html.ActionLink("Manage Location Stock", "ManageLocationStock", "Manager", new { locationId = CurrentManager.LocationId})
+    <h4>What would you like to do?</h4>
+    @*@Html.ActionLink(linkText: "View Location Order History", actionName: "GetLocationOrderHistory", controllerName: "Manager", new { locationId = Model.Id })
+        @Html.ActionLink("Manage Location Stock", "ManageLocationStock", "Manager", new { locationId = CurrentManager.LocationId})*@
+    <button class="btn btn-primary text-white" onclick="location.href='@Url.Action("GetLocationOrderHistory", "Manager", new { locationId = CurrentManager.LocationId})'">
+        View Location Order History
+    </button>
+    <button class="btn btn-primary text-white" onclick="location.href='@Url.Action("ManageLocationStock", "Manager", new { locationId = CurrentManager.LocationId})'">
+        Manage Location Stock
+    </button>
+</div>

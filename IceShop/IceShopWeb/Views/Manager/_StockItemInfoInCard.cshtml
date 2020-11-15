@@ -5,7 +5,7 @@
     <img src="" alt="">
     <div class="card-body">
         <h5>@Html.DisplayFor(model => model.Product.Name)</h5>
-        <div class="row">
+        <div class="row justify-content-center">
             <div class="col">
                 <p class="card-text text-md-center">@Html.DisplayFor(model => model.Product.TypeOfProductAsString)</p>
             </div>
@@ -16,10 +16,16 @@
                 <p class="card-text text-md-center">@Html.DisplayFor(model => model.ProductQuantity)</p>
             </div>
             <div class="col">
-                @Html.ActionLink("Add this item.", "IncrementStockItem", "Manager", Model)
+                @*@Html.ActionLink("Add this item.", "IncrementStockItem", "Manager", Model)*@
+                <button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("IncrementStockItem", "Manager", Model)'">
+                    Add this item.
+                </button>
             </div>
             <div class="col">
-                @Html.ActionLink("Remove this item.", "DecrementStockItem", "Manager", Model)
+                @*@Html.ActionLink("Remove this item.", "DecrementStockItem", "Manager", Model)*@
+                <button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("DecrementStockItem", "Manager", Model)'">
+                    Remove this item.
+                </button>
             </div>
         </div>
 

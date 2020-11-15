@@ -17,7 +17,6 @@ namespace IceShopWeb.Models
             Password = password;
         }
 
-        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -33,7 +32,7 @@ namespace IceShopWeb.Models
         // TODO: Try using SecureString instead of string for user passwords.
         [Required]
         [DisplayName("Password")]
-        [DataType(DataType.Password)]
+        [DataType(DataType.Password, ErrorMessage = "A user needs a password that lets them pass by typing a word.")]
         public string Password { get; set; }
 
 

@@ -22,7 +22,8 @@ namespace IceShopWeb.Models
 
         
         public int ProductQuantity { get; set; }
-        
+
+        [JsonConstructor]
         internal InventoryLineItem(int locationId, int productId, int productQuantity)
         {
             LocationId = locationId;
@@ -30,7 +31,7 @@ namespace IceShopWeb.Models
             ProductQuantity = productQuantity;
 
         }
-        [JsonConstructor]
+        
         public InventoryLineItem(int locationId, Product product, int productQuantity) : this(locationId, product.Id, productQuantity)
         {
             Product = product;

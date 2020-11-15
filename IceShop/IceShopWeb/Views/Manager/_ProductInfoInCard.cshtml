@@ -1,0 +1,24 @@
+﻿@model Product
+
+
+<div class="card" style="width: 8rem">
+    <img src="" alt="">
+    <div class="card-body">
+        <h5>@Html.DisplayFor(model => model.Name)</h5>
+        <div class="row">
+            <div class="col">
+                <p class="card-text text-md-center">@Html.DisplayFor(model => model.TypeOfProductAsString)</p>
+            </div>
+            <div class="col">
+                <p class="card-text text-md-center">$@Html.DisplayFor(model => model.Price)</p>
+            </div>
+            <div class="col">
+                @*@Html.ActionLink("Remove item from Cart", "RemoveItemFromCart", "Customer", Model)*@
+                <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action("AddNewProductToStock", "Manager", new { productId= Model.Id })'">
+                    Add to Stock.
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>

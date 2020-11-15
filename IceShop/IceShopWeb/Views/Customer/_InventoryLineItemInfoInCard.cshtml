@@ -16,7 +16,10 @@
                 <p class="card-text text-md-center">@Html.DisplayFor(model => model.ProductQuantity)</p>
             </div>
             <div class="col">
-                @Html.ActionLink("Add Item To Cart", "AddItemToCart", "Customer", Model)
+                @*@Html.ActionLink("Add Item To Cart", "AddItemToCart", "Customer", Model)*@
+                <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action( "AddItemToCart", "Customer", Model)'">
+                    Add Item To Cart.
+                </button>
             </div>
         </div>
 

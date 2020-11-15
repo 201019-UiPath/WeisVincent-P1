@@ -56,7 +56,6 @@ namespace IceShopAPI.Controllers
                 foreach(InventoryLineItem ili in stock)
                 {
                     stockDTOs.Add(_mapper.Map<ILIDTO>(ili));
-                    Console.WriteLine($"Added {ili}");
                 }
 
                 return Ok(stockDTOs);
@@ -87,7 +86,7 @@ namespace IceShopAPI.Controllers
             }
         }
 
-        [HttpPost("stock/add/{inventorylineitem}")]
+        [HttpPost("stock/add")]
         [Consumes("application/json")]
         public async Task<IActionResult> AddLineItemToStock(ILIDTO lineItemDTO)
         {

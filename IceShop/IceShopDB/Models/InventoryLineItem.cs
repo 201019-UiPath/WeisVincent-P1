@@ -11,6 +11,8 @@ namespace IceShopDB.Models
     {
         /*[Key]
         public int Id { get; set; }*/
+        public InventoryLineItem() { }
+
 
         [ForeignKey("Location")]
         public int LocationId { get; set; }

@@ -1,4 +1,5 @@
-﻿using IceShopAPI.DTO;
+﻿using AutoMapper;
+using IceShopAPI.DTO;
 using IceShopBL;
 using IceShopDB.Models;
 using Microsoft.AspNetCore.Cors;
@@ -14,20 +15,23 @@ namespace IceShopAPI.Controllers
     public class CustomerController : Controller
     {
         private readonly ICustomerService _customerService;
+        private readonly IMapper _mapper;
 
-        public CustomerController(ICustomerService customerService)
+        public CustomerController(ICustomerService customerService, IMapper mapper)
         {
             _customerService = customerService;
+            _mapper = mapper;
         }
 
         [HttpPost("add")]
         [Consumes("application/json")]
-        public IActionResult AddCustomer(Customer newCustomer)
+        public IActionResult AddCustomer(CustomerDTO customer)
         {
             try
             {
+                var newCustomer = _mapper.Map<Customer>(customer);
                 _customerService.AddCustomerToRepo(newCustomer);
-                return CreatedAtAction("AddCustomer", newCustomer);
+                return CreatedAtAction("AddCustomer", customer);
             }
             catch (Exception)
             {

@@ -1,4 +1,6 @@
-﻿using IceShopBL;
+﻿using AutoMapper;
+using IceShopAPI.DTO;
+using IceShopBL;
 using IceShopDB.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,10 +13,12 @@ namespace IceShopAPI.Controllers
     {
 
         private readonly IProductService _productService;
+        private readonly IMapper _mapper;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService, IMapper mapper)
         {
             _productService = productService;
+            _mapper = mapper;
         }
 
         [HttpGet("get")]
@@ -30,13 +34,15 @@ namespace IceShopAPI.Controllers
             }
         }
 
-        [HttpPost("add/{product}")]
+        [HttpPost("add")]
         [Consumes("application/json")]
-        public IActionResult AddNewProduct(Product product)
+        public IActionResult AddNewProduct(ProductDTO product)
         {
             try
             {
-                _productService.AddNewProduct(product);
+                var newProduct = _mapper.Map<Product>(product);
+
+                _productService.AddNewProduct(newProduct);
                 return CreatedAtAction("AddNewProduct", product);
             } catch (Exception)
             {
@@ -44,7 +50,7 @@ namespace IceShopAPI.Controllers
             }
         }
 
-        [HttpPut("update/{product}")]
+        [HttpPut("update")]
         [Consumes("application/json")]
         public IActionResult UpdateProductEntry(Product product)
         {

@@ -5,9 +5,11 @@
         @Html.DisplayFor(l => l.Name)
     </td>
     <td>
-        @Html.DisplayFor(l => l.Id)
+        @Html.DisplayFor(l => l.Address)
     </td>
     <td>
-        @Html.ActionLink("Order from this location.", "ViewInventoryAtLocation", new { locationId = Model.Id})
+        <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action("ViewInventoryAtLocation", "Customer", new { locationId = Model.Id })'">
+            Order from this location.
+        </button>
     </td>
 </tr>

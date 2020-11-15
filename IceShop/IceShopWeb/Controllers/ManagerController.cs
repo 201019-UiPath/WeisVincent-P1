@@ -1,5 +1,6 @@
 ﻿using IceShopWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace IceShopWeb.Controllers
 {
+    [Route("staff")]
     public class ManagerController : Controller
     {
 
@@ -156,13 +158,69 @@ namespace IceShopWeb.Controllers
 
             CurrentStock = stock;
 
-            var processedStock = ReturnStock(stock);
+            var getProcessedStock = Task<List<InventoryLineItem>>.Factory.StartNew(() => { return ReturnStockWithProductData(stock); });
+
+            string productsRequest = $"product/get";
+            var allProducts = await this.GetDataAsync<List<Product>>(productsRequest);
+
+            List<InventoryLineItem> processedStock = await getProcessedStock;
+            Task<List<Product>> getProductsInStock = Task<List<Product>>.Factory.StartNew(
+                () => {
+                    var stockedProducts = new List<Product>(allProducts.Count);
+                    foreach (InventoryLineItem ili in processedStock)
+                    {
+                        stockedProducts.Add(ili.Product);
+                    }
+                    return stockedProducts.Distinct().ToList();
+                });
+
+            List<Product> productsInStock = await getProductsInStock;
+
+            var getUnstockedProducts = Task<List<Product>>.Factory.StartNew(() =>
+            {
+                var productsNotStocked = new List<Product>();
+                foreach(Product product in allProducts)
+                {
+                    if (!productsInStock.Any(p=>p.Id == product.Id))
+                    {
+                        productsNotStocked.Add(product);
+                    }
+                }
+                return productsNotStocked;
+            });
+            
             
             ViewData["LocationName"] = ManagedLocation.Name;
             ViewData["StockData"] = CurrentStock;
+            ViewData["UnstockedProducts"] = await getUnstockedProducts;
 
             return View(processedStock);
         }
+
+        [Route("location/stock/add")]
+        public async Task<IActionResult> AddNewProductToStock(int productId)
+        {
+            if (CurrentManager == null) return await LoginRedirectActionTask;
+            if (CurrentStock == null) return RedirectToAction("ManageLocationStock", "Manager");
+
+            try
+            {
+                var newLineItem = new InventoryLineItem(ManagedLocation.Id, productId, 1);
+                string newILIRequest = $"location/stock/add";
+
+                await this.PostDataAsync(newILIRequest, newLineItem);
+            }
+            catch (HttpRequestException e)
+            {
+                //TODO: Do something if the request to the API fails.
+                var message = e.Message;
+                Console.WriteLine(message);
+            }
+            return RedirectToAction("ManageLocationStock", new { locationId = ManagedLocation.Id });
+        }
+
+
+
 
         [Route("location/stock/increment")]
         public async Task<IActionResult> IncrementStockItem(InventoryLineItem ili)
@@ -217,6 +275,53 @@ namespace IceShopWeb.Controllers
         }
 
 
+        // This view is to prompt for the information to be added. It's not a submission.
+        [Route("location/stock/addnew")]
+        [HttpGet]
+        public ViewResult AddBrandNewProduct() { 
+            if (ModelState.IsValid)
+            {
+                ViewBag.ProductTypes = GetProductTypesAsSelectOptions();
+            }
+            return View(); 
+        }
+
+        [HttpPost]
+        [Route("location/stock/addnew")]
+        public async Task<IActionResult> AddBrandNewProduct(Product product)
+        {
+            // TODO: Use Customer MVC Model instead of DB Model
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    Product newProduct = new Product(product.Name, product.Price, product.TypeOfProduct, product.Description);
+                    await this.PostDataAsync($"product/add", newProduct);
+
+                    return RedirectToAction("ManageLocationStock", ManagedLocation.Id);
+                }
+                catch (HttpRequestException e)
+                {
+                    ModelState.AddModelError(string.Empty, e.Message);
+                    ViewBag.ProductTypes = GetProductTypesAsSelectOptions();
+                    return View(product);
+                }
+            }
+            else return View(product);
+        }
+
+        private List<SelectListItem> GetProductTypesAsSelectOptions()
+        {
+            var productTypeOptions = new List<SelectListItem>();
+            string[] productTypes = Enum.GetNames(typeof(ProductType));
+            for (int i = 0; i < productTypes.Length; i++)
+            {
+                productTypeOptions.Add(new SelectListItem { Text = productTypes[i], Value = i.ToString(), Selected = false });
+            }
+            return productTypeOptions;
+        }
+
+
 
 
         public async Task<IActionResult> Index()
@@ -228,7 +333,7 @@ namespace IceShopWeb.Controllers
             return await Task.Factory.StartNew(() => View(CurrentManager));
         }
 
-        private List<InventoryLineItem> ReturnStock(List<InventoryLineItem> stock)
+        private List<InventoryLineItem> ReturnStockWithProductData(List<InventoryLineItem> stock)
         {
             var processedStock = ProcessInventory(stock);
             return processedStock;

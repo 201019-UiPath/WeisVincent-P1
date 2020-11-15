@@ -5,15 +5,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     // TODO: Populate this view with options for a customer who has just logged in.
 }
-
-<h2>Welcome, @CurrentCustomer.Name!</h2>
-
-<h4>What would you like to do?</h4>
-@*Html.ActionLink(linkText: "View Order History", actionName: "GetOrderHistory", controllerName: "Customer")*@
-@*Html.ActionLink("Place Order", "SelectLocation", "Customer")*@
-<button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("GetOrderHistory", "Customer")'">
-    View Order History
-</button>
-<button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("SelectLocation", "Customer")'">
-    Place Order
-</button>
+<div class="text-center justify-content-center">
+    <h2>Welcome, @CurrentCustomer.Name!</h2>
+    <h4>What would you like to do?</h4>
+    @*Html.ActionLink(linkText: "View Order History", actionName: "GetOrderHistory", controllerName: "Customer")*@
+    @*Html.ActionLink("Place Order", "SelectLocation", "Customer")*@
+    <button class="btn btn-primary text-white" onclick="location.href='@Url.Action("GetOrderHistory", "Customer")'">
+        View Order History
+    </button>
+    <button class="btn btn-primary text-white" onclick="location.href='@Url.Action("SelectLocation", "Customer")'">
+        Place Order
+    </button>
+</div>
