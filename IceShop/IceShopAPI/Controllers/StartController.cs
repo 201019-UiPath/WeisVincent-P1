@@ -16,7 +16,7 @@ namespace IceShopAPI.Controllers
             _startService = startService;
         }
 
-        //[HttpGet("get")]
+        [HttpGet("get")]
         [Produces("application/json")]
         public async Task<IActionResult> GetUserByEmailAsync(string email)
         {
@@ -32,23 +32,6 @@ namespace IceShopAPI.Controllers
             }
         }
 
-
-        // TODO: Does this even need to exist? maybe this can handle logins and sessions?
-        [HttpGet("get")]
-        [Produces("application/json")]
-        public IActionResult GetUserByEmail(string email)
-        {
-            try
-            {
-                var user = _startService.GetUserByEmail(email);
-
-                return Ok(user);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
-        }
 
 
 

@@ -32,7 +32,20 @@ namespace IceShopAPI.Controllers
         {
             try
             {
-                return Ok(_locationService.GetAllLocations());
+                var locations = _locationService.GetAllLocations();
+                var getMappedLocations = new List<Task<LocationDTO>>();
+
+                locations.ForEach(l => {
+                    var getMappedLocation = Task<LocationDTO>.Factory.StartNew(() => {
+                        return _mapper.Map<LocationDTO>(l);
+                    });
+                    
+                    getMappedLocations.Add(getMappedLocation);
+                });
+
+                var mappedLocations = await Task.WhenAll(getMappedLocations);
+
+                return Ok(mappedLocations);
             }
             catch (Exception)
             {

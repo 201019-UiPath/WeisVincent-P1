@@ -11,7 +11,6 @@ namespace IceShopWeb.Controllers
     [Route("user")]
     public class CustomerController : Controller
     {
-        const string url = "https://localhost:5001/api/";
 
         private Customer CurrentCustomer {
             get { return HttpContext.Session.Get<Customer>("CurrentCustomer");}
