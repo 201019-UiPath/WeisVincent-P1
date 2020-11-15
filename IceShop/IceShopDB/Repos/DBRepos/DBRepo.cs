@@ -148,6 +148,11 @@ namespace IceShopDB.Repos.DBRepos
             return context.Locations.ToListAsync();
         }
 
+        public Location GetLocationById(int locationId)
+        {
+            return context.Locations.Single(o => o.Id == locationId);
+        }
+
         public List<Order> GetAllOrdersForLocation(int locationID)
         {
             return context.Orders.Where(o => o.LocationId == locationID).ToList();

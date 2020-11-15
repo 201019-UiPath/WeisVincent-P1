@@ -38,58 +38,30 @@ namespace IceShopWeb.Controllers
                 string inputEmail = userInput.Email;
                 string inputPassword = userInput.Password;
 
-
-                /*using var client = new HttpClient();
-                client.BaseAddress = new Uri(url);*/
-
-                using var client = VincentExtensions.MakeInsecureHttpClient();
-
-                string request = $"customer/get/{inputEmail}";
-
-                
-                var resultCustomer = await this.GetDataAsync<Customer>(request);
-
-                if (resultCustomer.Password == inputPassword && resultCustomer.Email == inputEmail)
+                try
                 {
-                    HttpContext.Session.Set<Customer>("CurrentCustomer", resultCustomer);
-                    return RedirectToAction("Index", "Customer");
-                }
-                else
-                {
-                    return View(userInput);
-                }
-
-                #region Old way of logging in
-                /*var response = client.GetAsync(request);
-
-                response.Wait();
-
-                var result = response.Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    var readTask = result.Content.ReadAsAsync<Customer>();
-                    readTask.Wait();
-
-                    var resultCustomer = readTask.Result;
-
+                    string request = $"customer/get/{inputEmail}";
+                    var resultCustomer = await this.GetDataAsync<Customer>(request);
                     if (resultCustomer.Password == inputPassword && resultCustomer.Email == inputEmail)
                     {
                         HttpContext.Session.Set<Customer>("CurrentCustomer", resultCustomer);
                         return RedirectToAction("Index", "Customer");
                     }
-                    else
-                    {
+                    else {
+                        // TODO: Show the user the login failed.
+
                         return View(userInput);
-                    }
-
-                }*/
-
-
-                //return RedirectToAction("Index", "Customer");
-                #endregion
-
+                    };
+                } catch (HttpRequestException)
+                {
+                    // TODO: Add information for the user if the request failed.
+                    return View(userInput);
+                } catch (NullReferenceException)
+                {
+                    // TODO: Add information for the user if there was no customer returned.
+                    return View(userInput);
+                }
             }
-
 
             return View(userInput);
         }

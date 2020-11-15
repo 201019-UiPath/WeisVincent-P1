@@ -2,6 +2,9 @@
 using IceShopDB.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using AutoMapper;
+using System.Collections.Generic;
+using IceShopAPI.DTO;
 
 namespace IceShopAPI.Controllers
 {
@@ -9,11 +12,13 @@ namespace IceShopAPI.Controllers
     [ApiController]
     public class ManagerController : ControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly IManagerService _managerService;
 
-        public ManagerController(IManagerService managerService)
+        public ManagerController(IManagerService managerService, IMapper mapper)
         {
             _managerService = managerService;
+            _mapper = mapper;
         }
 
         [HttpGet("get")]
@@ -22,7 +27,17 @@ namespace IceShopAPI.Controllers
         {
             try
             {
-                return Ok(_managerService.GetAllManagers());
+                var managers = _managerService.GetAllManagers();
+
+                var mappedManagers = new List<ManagerDTO>();
+
+                foreach(Manager manager in managers)
+                {
+                    var managerDTO = _mapper.Map<ManagerDTO>(manager);
+                    mappedManagers.Add(managerDTO);
+                }
+
+                return Ok(mappedManagers);
             }
             catch (Exception)
             {
@@ -38,7 +53,11 @@ namespace IceShopAPI.Controllers
         {
             try
             {
-                return Ok(_managerService.GetManagerByEmail(email));
+                var foundManager = _managerService.GetManagerByEmail(email);
+
+                var mappedManager = _mapper.Map<ManagerDTO>(foundManager);
+
+                return Ok(mappedManager);
             }
             catch (Exception)
             {
@@ -48,12 +67,14 @@ namespace IceShopAPI.Controllers
 
         [HttpPost("add/{manager}")]
         [Consumes("application/json")]
-        public IActionResult AddManager(Manager newManager)
+        public IActionResult AddManager(ManagerDTO newManager)
         {
             try
             {
-                _managerService.AddManager(newManager);
-                return CreatedAtAction("AddManager", newManager);
+                var receivedManager = _mapper.Map<Manager>(newManager);
+                _managerService.AddManager(receivedManager);
+
+                return CreatedAtAction("AddManager", receivedManager);
             }
             catch (Exception)
             {

@@ -1,0 +1,13 @@
+﻿@model Manager
+@{
+    ViewData["Title"] = "Index";
+    Manager CurrentManager = Model;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    // TODO: Populate this view with options for a customer who has just logged in.
+}
+
+<h2>Welcome, @CurrentManager.Name!</h2>
+
+<h4>What would you like to do?</h4>
+@Html.ActionLink(linkText: "View Location Order History", actionName: "GetLocationOrderHistory", controllerName: "Manager", new { locationId = Model.Id })
+@Html.ActionLink("Manage Location Stock", "ManageLocationStock", "Manager", new { locationId = CurrentManager.LocationId})

@@ -1,0 +1,20 @@
+﻿@model List<InventoryLineItem>
+
+@{
+    var inventoryLineItems = Model;
+
+    var Cart = ViewData["CartData"] as List<InventoryLineItem>;
+}
+
+
+<h1>Products at @ViewData["LocationName"]</h1>
+<div class="text-center container card-deck">
+    @{
+        foreach (var ili in inventoryLineItems)
+        {
+
+            @await Html.PartialAsync($"_StockItemInfoInCard", ili);
+        }
+    }
+</div>
+

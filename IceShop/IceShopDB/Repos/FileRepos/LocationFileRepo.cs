@@ -54,5 +54,10 @@ namespace IceShopDB.Repos.FileRepos
         {
             throw new NotImplementedException();
         }
+
+        public Location GetLocationById(int locationId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,0 +1,27 @@
+﻿@model InventoryLineItem
+
+
+<div class="card" style="width: 8rem">
+    <img src="" alt="">
+    <div class="card-body">
+        <h5>@Html.DisplayFor(model => model.Product.Name)</h5>
+        <div class="row">
+            <div class="col">
+                <p class="card-text text-md-center">@Html.DisplayFor(model => model.Product.TypeOfProductAsString)</p>
+            </div>
+            <div class="col">
+                <p class="card-text text-md-center">$@Html.DisplayFor(model => model.Product.Price)</p>
+            </div>
+            <div class="col">
+                <p class="card-text text-md-center">@Html.DisplayFor(model => model.ProductQuantity)</p>
+            </div>
+            <div class="col">
+                @Html.ActionLink("Add this item.", "IncrementStockItem", "Manager", Model)
+            </div>
+            <div class="col">
+                @Html.ActionLink("Remove this item.", "DecrementStockItem", "Manager", Model)
+            </div>
+        </div>
+
+    </div>
+</div>

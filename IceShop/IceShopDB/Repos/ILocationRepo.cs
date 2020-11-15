@@ -11,6 +11,8 @@ namespace IceShopDB.Repos
 
         Task<List<Location>> GetAllLocationsAsync();
 
+        Location GetLocationById(int locationId);
+
         List<InventoryLineItem> GetAllInventoryLineItemsAtLocation(int locationId);
 
         Task<List<InventoryLineItem>> GetAllInventoryLineItemsAtLocationAsync(int locationId);

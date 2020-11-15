@@ -1,7 +1,7 @@
 ﻿<!--This Screen should be for logging in.-->
 @model IceShopWeb.Models.AuthPack
 @{
-    ViewData["Title"] = "Ice Shop Login";
+    ViewData["Title"] = "Manager Login";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     bool writeRedirectError = false;
@@ -19,7 +19,8 @@
 
 <h4>Login</h4>
 <h5 class='text-danger text-capitalize'>@ViewData["Redirect"]</h5>
-@{ if (writeRedirectError) { @Html.DisplayText(redirectString)} }
+@{ if (writeRedirectError)
+    { @Html.DisplayText(redirectString)} }
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -31,20 +32,6 @@
 </div>
 
 <div>
-    <button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("AddCustomer", "Customer")'">
-        Sign up.
-    </button>
-    @*Html.ActionLink("Sign up.", "AddCustomer", "Customer")*@
-    <button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("Login", "Manager")'">
-        Login as Manager
-    </button>
-    @*Html.ActionLink("Login as Manager.", "Login", "Manager")*@
+    @Html.ActionLink("Sign up.", "AddManager", "Manager")
+    @Html.ActionLink("Login as Customer.", "Login", "Home")
 </div>
-
-
-
-
-
-@{
-    //await Html.PartialAsync("./_SampleIndexStuff.cshtml")
-}

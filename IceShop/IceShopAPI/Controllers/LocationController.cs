@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,7 +28,7 @@ namespace IceShopAPI.Controllers
 
         [HttpGet("get")]
         [Produces("application/json")]
-        public IActionResult GetLocations()
+        public async Task<IActionResult> GetLocations()
         {
             try
             {
@@ -42,9 +43,9 @@ namespace IceShopAPI.Controllers
 
         [HttpGet("stock/get/{locationId}")]
         [Produces("application/json")]
-        public IActionResult GetStockAtLocation(int locationId)
+        public async Task<IActionResult> GetStockAtLocation(int locationId)
         {
-            //try
+            try
             {
                 var location = _locationService.GetAllLocations().Single(l => l.Id == locationId);
 
@@ -60,20 +61,23 @@ namespace IceShopAPI.Controllers
 
                 return Ok(stockDTOs);
             }
-            //catch (Exception)
+            catch (Exception)
             {
                 // TODO: Check if this is the right error code for this.
                 return StatusCode(500);
             }
         }
 
-        [HttpGet("orders/get/{location}")]
+        [HttpGet("orders/get/{locationId}")]
         [Produces("application/json")]
-        public IActionResult GetOrdersAtLocation(LocationDTO locationDTO)
+        public async Task<IActionResult> GetOrdersAtLocation(int locationId)
         {
             try
             {
-                var location = _mapper.Map<Location>(locationDTO);
+                Location location = _locationService.GetLocationById(locationId);
+
+                List<Order> locationOrderHistory = _locationService.GetAllOrdersForLocation(location);
+
                 return Ok(_locationService.GetAllOrdersForLocation(location));
             }
             catch (Exception)
@@ -85,7 +89,7 @@ namespace IceShopAPI.Controllers
 
         [HttpPost("stock/add/{inventorylineitem}")]
         [Consumes("application/json")]
-        public IActionResult AddLineItemToStock(ILIDTO lineItemDTO)
+        public async Task<IActionResult> AddLineItemToStock(ILIDTO lineItemDTO)
         {
             try
             {
@@ -102,14 +106,23 @@ namespace IceShopAPI.Controllers
 
         [HttpPut("stock/update")]
         [Consumes("application/json")]
-        public IActionResult UpdateLineItemInStock(ILIDTO lineItemDTO)
+        public async Task<IActionResult> UpdateLineItemInStock(ILIDTO lineItemDTO)
         {
             try
             {
-                var lineItem = _mapper.Map<InventoryLineItem>(lineItemDTO);
+                var existingILIs = await _locationService.GetAllProductsAtLocationAsync(lineItemDTO.LocationId);
+                var existingLineItem = existingILIs.Single(ili => ili.ProductId == lineItemDTO.ProductId);
 
-                _locationService.UpdateInventoryLineItemInRepo(lineItem);
+                if (existingLineItem != null)
+                {
+                    existingLineItem.ProductQuantity = lineItemDTO.ProductQuantity;
+                    _locationService.UpdateInventoryLineItemInRepo(existingLineItem);
+                }
+                
                 return AcceptedAtAction("UpdateLineItemInStock", lineItemDTO);
+            } catch (InvalidOperationException)
+            {
+                return StatusCode(500);
             }
             catch (Exception)
             {
@@ -120,7 +133,7 @@ namespace IceShopAPI.Controllers
 
         [HttpPut("stock/remove")]
         [Consumes("application/json")]
-        public IActionResult RemoveLineItemInStock(InventoryLineItem lineItemDTO)
+        public async Task<IActionResult> RemoveLineItemInStock(InventoryLineItem lineItemDTO)
         {
             try
             {

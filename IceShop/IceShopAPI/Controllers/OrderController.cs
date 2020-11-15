@@ -31,7 +31,9 @@ namespace IceShopAPI.Controllers
             try
             {
                 var order = _orderService.GetOrderById(orderId);
-                var productDTOs = _mapper.Map<List<OLIDTO>>(_orderService.GetAllProductsInOrder(order));
+                var orderedProducts = _orderService.GetAllProductsInOrder(order);
+
+                var productDTOs = _mapper.Map<List<OLIDTO>>(orderedProducts);
 
                 return Ok(productDTOs);
             }
@@ -70,9 +72,28 @@ namespace IceShopAPI.Controllers
                 var orderLineItem = _mapper.Map<OrderLineItem>(oli);
 
                 _orderService.AddOrderLineItemToRepo(orderLineItem);
-                    
 
-                return CreatedAtAction("AddOrder", orderLineItem);
+                return CreatedAtAction("AddOrderLineItem", orderLineItem);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPost("lineitem/addmany")]
+        [Produces("application/json")]
+        public IActionResult AddOrderLineItems(List<OLIDTO> olis)
+        {
+            try
+            {
+                foreach(OLIDTO oli in olis)
+                {
+                    var orderLineItem = _mapper.Map<OrderLineItem>(oli);
+                    _orderService.AddOrderLineItemToRepo(orderLineItem);
+                }
+
+                return CreatedAtAction("AddOrderLineItems", olis);
             }
             catch (Exception)
             {

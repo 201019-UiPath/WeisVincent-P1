@@ -14,12 +14,19 @@ namespace IceShopAPI.DTO
         {
             CreateMap<Order, OrderDTO>();
             CreateMap<OrderDTO, Order>();
+
             CreateMap<Customer, CustomerDTO>();
             CreateMap<CustomerDTO, Customer>();
+
+            CreateMap<Manager, ManagerDTO>();
+            CreateMap<ManagerDTO, Manager>();
+
             CreateMap<Product, ProductDTO>();
             CreateMap<ProductDTO, Product>();
+
             CreateMap<OrderLineItem, OLIDTO>();
             CreateMap<OLIDTO, OrderLineItem>();
+
             CreateMap<InventoryLineItem, ILIDTO>();
             CreateMap<ILIDTO, InventoryLineItem>();
 

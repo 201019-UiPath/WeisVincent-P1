@@ -10,22 +10,23 @@
     <h1>Order History</h1>
 
     <h4>Sort orders...</h4>
-    <button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("GetOrderHistory", "Customer",new { sortBy = 0 })'">
+    <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action("GetLocationOrderHistory", "Manager",new { sortBy = 0 })'">
         By Date Placed, descending.
     </button>
-    <button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("GetOrderHistory", "Customer",new { sortBy = 1 })'">
+    <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action("GetLocationOrderHistory", "Manager",new { sortBy = 1 })'">
         By Date Placed, ascending.
     </button>
-    <button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("GetOrderHistory", "Customer",new { sortBy = 2 })'">
+    <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action("GetLocationOrderHistory", "Manager",new { sortBy = 2 })'">
         By Price, descending.
     </button>
-    <button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("GetOrderHistory", "Customer",new { sortBy = 3 })'">
+    <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action("GetLocationOrderHistory", "Manager",new { sortBy = 3 })'">
         By Price, ascending.
     </button>
-    @*@Html.ActionLink("By Date Placed, descending.", "GetOrderHistory", "Customer", new { sortBy = 0 })
-    @Html.ActionLink("By Date Placed, ascending.", "GetOrderHistory", "Customer", new { sortBy = 1 })
-    @Html.ActionLink("By Price, descending.", "GetOrderHistory", "Customer", new { sortBy = 2 })
-    @Html.ActionLink("By Price, ascending.", "GetOrderHistory", "Customer", new { sortBy = 3 })*@
+    @*
+        @Html.ActionLink("By Date Placed, descending.", "GetLocationOrderHistory", "Manager", new { sortBy = 0 })
+        @Html.ActionLink("By Date Placed, ascending.", "GetLocationOrderHistory", "Manager", new { sortBy = 1 })
+        @Html.ActionLink("By Price, descending.", "GetLocationOrderHistory", "Manager", new { sortBy = 2 })
+        @Html.ActionLink("By Price, ascending.", "GetLocationOrderHistory", "Manager", new { sortBy = 3 })*@
 
     <table class="table">
         <thead>

@@ -45,6 +45,12 @@ namespace IceShopBL.Services
             return repo.GetAllInventoryLineItemsAtLocationAsync(location.Id);
         }
 
+        public Task<List<InventoryLineItem>> GetAllProductsAtLocationAsync(int locationId)
+        {
+            Log.Logger.Information("Retrieving list of products at a location from the repository..");
+            return repo.GetAllInventoryLineItemsAtLocationAsync(locationId);
+        }
+
         public List<InventoryLineItem> GetAllProductsStockedAtLocation(Location location)
         {
             Log.Logger.Information("Retrieving list of inventory stock at a location from the repository..");
@@ -83,8 +89,9 @@ namespace IceShopBL.Services
             repo.SaveChanges();
         }
 
-
-
-
+        public Location GetLocationById(int locationId)
+        {
+            return repo.GetLocationById(locationId);
+        }
     }
 }

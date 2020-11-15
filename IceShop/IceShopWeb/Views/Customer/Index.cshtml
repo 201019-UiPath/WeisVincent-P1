@@ -9,7 +9,11 @@
 <h2>Welcome, @CurrentCustomer.Name!</h2>
 
 <h4>What would you like to do?</h4>
-
-<input type="button" value="View Order History" onclick="window.location.href='@Url.ActionLink(action:"GetOrderHistory", controller:"Customer")'" />
-<input type="button" value="Place Order" onclick="window.location.href='@Url.Action("SelectLocation", "Customer")'" />
-<input type="button" value="View Current Cart" onclick="window.location.href='@Url.Action("ViewOrderCart", "Customer")'" />
+@*Html.ActionLink(linkText: "View Order History", actionName: "GetOrderHistory", controllerName: "Customer")*@
+@*Html.ActionLink("Place Order", "SelectLocation", "Customer")*@
+<button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("GetOrderHistory", "Customer")'">
+    View Order History
+</button>
+<button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("SelectLocation", "Customer")'">
+    Place Order
+</button>

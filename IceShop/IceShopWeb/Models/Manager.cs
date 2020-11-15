@@ -7,6 +7,7 @@ namespace IceShopWeb.Models
     public class Manager : User
     {
 
+        public Manager() { }
 
         internal Manager(string name, string email, string password, int locationId) : base(name, email, password)
         {
@@ -31,9 +32,7 @@ namespace IceShopWeb.Models
             LocationId = managedLocation.Id;
         }
 
-        [ForeignKey("Location")]
         public int LocationId { get; set; }
-        [Required]
         public Location Location { get; set; }
 
     }

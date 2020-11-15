@@ -37,7 +37,6 @@ namespace IceShopWeb.Controllers
         [Route("")]
         public async Task<IActionResult> Index()
         {
-            // TODO: Check if the customer is logged in before returning this
             if (CurrentCustomer == null)
             {
                 return await LoginRedirectActionTask;
@@ -102,117 +101,33 @@ namespace IceShopWeb.Controllers
 
             return View(receivedOrderLineItems);
         }
-
-
-        [Route("sample/AllCustomers")]
-        public async Task<IActionResult> GetAllCustomers()
-        {
-            //if (CurrentCustomer == null) return LoginRedirectAction;
-
-            //List<Customer> customers = new List<Customer>();
-
-            string request = $"customer/get";
-
-            var customers = await this.GetDataAsync<List<Customer>>(request);
-
-            return View(customers);
-            #region Old way of getting all customers
-            /*using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(url);
-                var response = client.GetAsync("customer/get");
-                response.Wait();
-
-                var result = response.Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    var readTask = await result.Content.ReadAsAsync<Customer[]>();
-
-
-                    var arrayOfCustomers = readTask;//.Result;
-                    foreach (var customer in arrayOfCustomers)
-                    {
-                        customers.Add(customer);
-                    }
-                    customers.Add(CurrentCustomer);
-                }
-            }
-            //var fetchedCustomers = await _repo.GetAllCustomersAsync();
-             return View(customers);
-             */
-            #endregion
-
-        }
-
-        [Route("get/{email}")]
-        public async Task<IActionResult> GetCustomerByEmail(string email)
-        {
-            if (CurrentCustomer == null) return LoginRedirectAction;
-            Customer customer;
-
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri(url);
-                var response = client.GetAsync($"customer/get/{email}");
-                response.Wait();
-
-                var result = response.Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    var readTask = result.Content.ReadAsAsync<Customer>();
-                    readTask.Wait();
-
-                    var resultCustomer = readTask.Result;
-                    customer = resultCustomer;
-                    return View(customer);
-                }
-            }
-
-
-            // TODO: What to do here...
-            return View();
-
-        }
+        
 
         // This view is to prompt for the information to be added. It's not a submission.
-        // [HttpGet]
         [Route("add")]
-        public ViewResult AddCustomer()
-        {
-
-            return View();
-        }
+        public ViewResult AddCustomer() { return View(); }
 
         [HttpPost]
         [Route("add")]
-        public IActionResult AddCustomer(Customer customer)
+        public async Task<IActionResult> AddCustomer(Customer customer)
         {
             // TODO: Use Customer MVC Model instead of DB Model
             if (ModelState.IsValid)
             {
-                Customer newCustomer = new Customer(customer.Name, customer.Email, customer.Password, customer.Address);
-
-                using (var client = new HttpClient())
+                try
                 {
-                    client.BaseAddress = new Uri(url);
-                    var response = client.PostAsJsonAsync($"customer/add", newCustomer);
-                    response.Wait();
+                    Customer newCustomer = new Customer(customer.Name, customer.Email, customer.Password, customer.Address);
+                    await this.PostDataAsync($"customer/add", newCustomer);
 
-                    var result = response.Result;
-                    if (result.IsSuccessStatusCode)
-                    {
-                        var readTask = result.Content.ReadAsAsync<Customer>();
-                        readTask.Wait();
-
-                        var resultCustomer = readTask.Result;
-                        customer = resultCustomer;
-                        return View(customer);
-                    }
+                    AuthPack customerData = new AuthPack(customer.Email, customer.Password);
+                    return RedirectToAction("Login", "Home", customerData);
+                } catch (HttpRequestException e)
+                {
+                    ModelState.AddModelError(string.Empty, e.Message);
+                    return View(customer);
                 }
-
-                return Redirect("GetAllCustomers");
             }
-            else return View();
+            else return View(customer);
         }
 
         [Route("order/")]
@@ -253,6 +168,7 @@ namespace IceShopWeb.Controllers
         [Route("order/cart/view")]
         public async Task<IActionResult> ViewCart()
         {
+            // TODO: Unused action. Consider removal.
             if (CurrentCustomer == null) return await LoginRedirectActionTask;
             if (CurrentCart != null) return View(CurrentCart);
 
@@ -315,62 +231,71 @@ namespace IceShopWeb.Controllers
             if (CurrentCustomer == null) return await LoginRedirectActionTask;
             if (CurrentCart == null) return await LoginRedirectActionTask;//TODO: Redirect properly.
 
-            // Arrange data needed to submit the order.
-            List<InventoryLineItem> tempCart = CurrentCart;
-            List<OrderLineItem> orderItems = new List<OrderLineItem>();
-
-            // Get the time of the order.
-            double timeNowAsDouble = DateTimeUtility.GetUnixEpochAsDouble(DateTime.Now);
-
-            // Get the total of the order.
-            double total = 0.0;
-            tempCart.ForEach(cartItem => total += cartItem.Product.Price * cartItem.ProductQuantity);
-
-            // Generate a new order, without an ID.
-            Order newOrder = new Order(CurrentCustomer.Id, CurrentLocation.Id, CurrentCustomer.Address, total, timeNowAsDouble);
-
-            // Submit the order without the ID.
-            var postOrderRequest = $"order/add";
-            await this.PostDataAsync(postOrderRequest, newOrder);
-
-            // Get the order back so we can have the ID.
-            var getOrderRequest = $"order/get?dateTimeDouble={timeNowAsDouble}";
-            var retrievedRedundantOrder = await this.GetDataAsync<Order>(getOrderRequest);
-
-            // Make the order items from the cart items, using the fetched order Id.
-            foreach(InventoryLineItem cartItem in tempCart)
+            try
             {
-                var newOrderItem = new OrderLineItem(retrievedRedundantOrder.Id, cartItem.ProductId, cartItem.ProductQuantity);
-                orderItems.Add(newOrderItem);
+                // Arrange data needed to submit the order.
+                List<InventoryLineItem> tempCart = CurrentCart;
+                List<OrderLineItem> orderItems = new List<OrderLineItem>();
+
+                // Get the time of the order.
+                double timeNowAsDouble = DateTimeUtility.GetUnixEpochAsDouble(DateTime.Now);
+
+                // Get the total of the order.
+                double total = 0.0;
+                tempCart.ForEach(cartItem => total += cartItem.Product.Price * cartItem.ProductQuantity);
+
+                // Generate a new order, without an ID.
+                Order newOrder = new Order(CurrentCustomer.Id, CurrentLocation.Id, CurrentCustomer.Address, total, timeNowAsDouble);
+
+                // Submit the order without the ID.
+                var postOrderRequest = $"order/add";
+                await this.PostDataAsync(postOrderRequest, newOrder);
+
+                // Get the order back so we can have the ID.
+                var getOrderRequest = $"order/get?dateTimeDouble={timeNowAsDouble}";
+                var retrievedRedundantOrder = await this.GetDataAsync<Order>(getOrderRequest);
+
+                #region Make the order items from the cart items, using the fetched order Id.
+                foreach (InventoryLineItem cartItem in tempCart)
+                {
+                    var newOrderItem = new OrderLineItem(retrievedRedundantOrder.Id, cartItem.ProductId, cartItem.ProductQuantity);
+                    orderItems.Add(newOrderItem);
+                }
+                #endregion
+
+
+                #region Submit the order line items.
+                var postOrderLineItemRequest = $"order/lineitem/addmany";
+                await this.PostDataAsync(postOrderLineItemRequest, orderItems);
+                /*foreach (OrderLineItem oli in orderItems)
+                {
+                    var postOrderLineItemRequest = $"order/lineitem/add";
+                    await this.PostDataAsync(postOrderLineItemRequest, oli);
+                }*/
+                #endregion
+
+                string request = $"location/stock/get/{CurrentLocation.Id}";
+                var stock = await this.GetDataAsync<List<InventoryLineItem>>(request);
+
+                var processedStock = ReturnStockWithoutCartItems(stock, tempCart);
+
+                foreach (InventoryLineItem ili in processedStock)
+                {
+                    string putStockRequest = $"location/stock/update";
+                    await this.PutDataAsync(putStockRequest, ili);
+                }
+
+                // Clear all relevant data.
+                tempCart.Clear();
+                CurrentCart = null;
+
+                // TODO: Show successful order submission.
+                return RedirectToAction("Index");
+            } catch (HttpRequestException e)
+            {
+                return StatusCode(500, e);
             }
 
-
-
-            // Submit the order line items.
-            foreach (OrderLineItem oli in orderItems)
-            {
-                var postOrderLineItemRequest = $"order/lineitem/add";
-                await this.PostDataAsync(postOrderLineItemRequest, oli);
-            }
-
-            string request = $"location/stock/get/{CurrentLocation.Id}";
-            var stock = await this.GetDataAsync<List<InventoryLineItem>>(request);
-
-            var processedStock = ReturnStockWithoutCartItems(stock, tempCart);
-
-            foreach (InventoryLineItem ili in processedStock)
-            {
-                string putStockRequest= $"location/stock/update";
-                await this.PutDataAsync(putStockRequest, ili);
-            }
-
-            // Clear all relevant data.
-            tempCart.Clear();
-            CurrentCart = null;
-
-            // TODO: Show successful order submission.
-            return RedirectToAction("Index");
-            
         }
 
         private List<InventoryLineItem> ReturnStockWithoutCartItems(List<InventoryLineItem> stock, List<InventoryLineItem> cart)
