@@ -7,21 +7,25 @@
 }
 <div class="text-center">
 
-    <h1>Order History</h1>
+    <h1>Order History at @ViewData["LocationName"]</h1>
 
     <h4>Sort orders...</h4>
-    <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action("GetLocationOrderHistory", "Manager",new { sortBy = 0 })'">
-        By Date Placed, descending.
-    </button>
-    <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action("GetLocationOrderHistory", "Manager",new { sortBy = 1 })'">
-        By Date Placed, ascending.
-    </button>
-    <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action("GetLocationOrderHistory", "Manager",new { sortBy = 2 })'">
-        By Price, descending.
-    </button>
-    <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action("GetLocationOrderHistory", "Manager",new { sortBy = 3 })'">
-        By Price, ascending.
-    </button>
+    <div>
+        <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action("GetLocationOrderHistory", "Manager",new { sortBy = 0 })'">
+            By Date Placed, descending.
+        </button>
+        <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action("GetLocationOrderHistory", "Manager",new { sortBy = 1 })'">
+            By Date Placed, ascending.
+        </button>
+    </div>
+    <div>
+        <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action("GetLocationOrderHistory", "Manager",new { sortBy = 2 })'">
+            By Price, descending.
+        </button>
+        <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action("GetLocationOrderHistory", "Manager",new { sortBy = 3 })'">
+            By Price, ascending.
+        </button>
+    </div>
     @*
         @Html.ActionLink("By Date Placed, descending.", "GetLocationOrderHistory", "Manager", new { sortBy = 0 })
         @Html.ActionLink("By Date Placed, ascending.", "GetLocationOrderHistory", "Manager", new { sortBy = 1 })
@@ -41,7 +45,7 @@
                     @Html.DisplayNameFor(model => model.First().Address)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.First().TimeOrderWasPlaced)
+                    @*Html.DisplayNameFor(model => model.First().TimeOrderWasPlaced)*@Date Placed
                 </th>
                 <th>
 

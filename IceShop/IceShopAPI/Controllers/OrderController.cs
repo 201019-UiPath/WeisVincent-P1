@@ -5,9 +5,15 @@ using IceShopDB.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace IceShopAPI.Controllers
 {
+    /// <summary>
+    /// API controller that handles order information, which includes getting a list of products in an order, 
+    /// getting an order by its date time as a double, 
+    /// and adding a new order and associated line items.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
@@ -23,15 +29,23 @@ namespace IceShopAPI.Controllers
             _orderService = orderService;
             _mapper = mapper;
         }
-
+        
+        /// <summary>
+        /// Action that gets all the products in a specific order, selected by id.
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
         [HttpGet("products/get/{orderId}")]
         [Produces("application/json")]
-        public IActionResult GetAllProductsInOrder(int orderId)
+        public async Task<IActionResult> GetAllProductsInOrder(int orderId)
         {
             try
             {
-                var order = _orderService.GetOrderById(orderId);
-                var orderedProducts = _orderService.GetAllProductsInOrder(order);
+                var getOrder = Task.Factory.StartNew(() => {return _orderService.GetOrderById(orderId); });
+                var order = await getOrder;
+
+                var getOrderedProducts = Task.Factory.StartNew(() => { return _orderService.GetAllProductsInOrder(order); });
+                var orderedProducts = await getOrderedProducts;
 
                 var productDTOs = _mapper.Map<List<OLIDTO>>(orderedProducts);
 
@@ -44,16 +58,24 @@ namespace IceShopAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Action that handles adding an order, and returns the order added, complete with the generated ID.
+        /// </summary>
+        /// <param name="orderDTO"></param>
+        /// <returns></returns>
         [HttpPost("add")]
         [Produces("application/json")]
-        public IActionResult AddOrder(OrderDTO orderDTO)
+        public async Task<IActionResult> AddOrder(OrderDTO orderDTO)
         {
             try
             {
                 var order = _mapper.Map<Order>(orderDTO);
-                _orderService.AddOrderToRepo(order);
 
-                var fetchedOrder = _orderService.GetOrderByDateTime(order.TimeOrderWasPlaced);
+                var addOrder = Task.Factory.StartNew( () => _orderService.AddOrderToRepo(order) );
+                await addOrder;
+
+                var fetchAddedOrder = Task.Factory.StartNew(() => { return _orderService.GetOrderByDateTime(order.TimeOrderWasPlaced); });
+                var fetchedOrder = await fetchAddedOrder;
 
                 var mappedOrder = _mapper.Map<OrderDTO>(fetchedOrder);
                 return CreatedAtAction("AddOrder", fetchedOrder);
@@ -63,15 +85,21 @@ namespace IceShopAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Action that handles adding an order line item, to an associated order.
+        /// </summary>
+        /// <param name="oli"></param>
+        /// <returns></returns>
         [HttpPost("lineitem/add")]
         [Produces("application/json")]
-        public IActionResult AddOrderLineItem(OLIDTO oli)
+        public async Task<IActionResult> AddOrderLineItem(OLIDTO oli)
         {
             try
             {
                 var orderLineItem = _mapper.Map<OrderLineItem>(oli);
+                var addOrderLineItem = Task.Factory.StartNew(() => _orderService.AddOrderLineItemToRepo(orderLineItem) );
 
-                _orderService.AddOrderLineItemToRepo(orderLineItem);
+                await addOrderLineItem;
 
                 return CreatedAtAction("AddOrderLineItem", orderLineItem);
             }
@@ -81,17 +109,39 @@ namespace IceShopAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Action that handles adding multiple order line items in bulk.
+        /// </summary>
+        /// <param name="olis"></param>
+        /// <returns></returns>
         [HttpPost("lineitem/addmany")]
         [Produces("application/json")]
-        public IActionResult AddOrderLineItems(List<OLIDTO> olis)
+        public async Task<IActionResult> AddOrderLineItems(List<OLIDTO> olis)
         {
             try
             {
+                var mapOrderLineItems = new List<Task<OrderLineItem>>();
+
                 foreach(OLIDTO oli in olis)
                 {
-                    var orderLineItem = _mapper.Map<OrderLineItem>(oli);
-                    _orderService.AddOrderLineItemToRepo(orderLineItem);
+                    var mapOrderLineItem = Task.Factory.StartNew(() => { 
+                        var orderLineItem = _mapper.Map<OrderLineItem>(oli);
+                        return orderLineItem; 
+                    });
+
+                    mapOrderLineItems.Add(mapOrderLineItem);
                 }
+
+                var orderLineItems = await Task.WhenAll(mapOrderLineItems);
+
+                var addOrderLineItems = new List<Task>();
+                foreach(OrderLineItem oli in orderLineItems)
+                {
+                    var addOLITask = Task.Factory.StartNew(()=> _orderService.AddOrderLineItemToRepo(oli));
+                    addOrderLineItems.Add(addOLITask);
+                }
+
+                await Task.WhenAll(addOrderLineItems);
 
                 return CreatedAtAction("AddOrderLineItems", olis);
             }
@@ -101,6 +151,11 @@ namespace IceShopAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Action that handles getting order data by finding an order by the time it was submitted. Not ideal.
+        /// </summary>
+        /// <param name="dateTimeDouble"></param>
+        /// <returns></returns>
         [HttpGet("get")]
         [Produces("application/json")]
         public IActionResult GetOrderByDateTime(double dateTimeDouble)

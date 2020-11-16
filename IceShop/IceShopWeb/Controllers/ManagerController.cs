@@ -43,7 +43,18 @@ namespace IceShopWeb.Controllers
             LoginRedirectActionTask = Task.Factory.StartNew(() => LoginRedirectAction);
         }
 
+        [HttpGet]
+        [Route("login")]
+        public ViewResult Login(int? sessionExists)
+        {
+            if (sessionExists == 0)
+            {
+                ViewData["Redirect"] = "Your session does not exist. Please sign in.";
+            }
+            return View();
+        }
 
+        [Route("login")]
         public async Task<IActionResult> Login(AuthPack userInput)
         {
             if (ModelState.IsValid)
@@ -111,7 +122,7 @@ namespace IceShopWeb.Controllers
                 3 => receivedOrders.OrderBy(o => o.Subtotal).Reverse().ToList(),
                 _ => receivedOrders
             };
-
+            ViewData["LocationName"] = ManagedLocation.Name;
             if (receivedOrders != default) return View(sortedOrders); else return StatusCode(500);
             //return resultView;
 
@@ -323,7 +334,7 @@ namespace IceShopWeb.Controllers
 
 
 
-
+        [Route("")]
         public async Task<IActionResult> Index()
         {
             if (CurrentManager == null)

@@ -14,17 +14,16 @@
 }
 
 
-<div class="text-center justify-content-center">
+<div class="text-center justify-content-center mx-auto">
     <h1>@ViewData["Title"]</h1>
 
-    <h4>Login</h4>
     <h5 class='text-danger text-capitalize'>@ViewData["Redirect"]</h5>
     @{ if (writeRedirectError)
         { @Html.DisplayText(redirectString)} }
     <hr />
-    <div class="row">
-        <div class="col-md-4">
-            <form asp-action="Login">
+    <div class="">
+        <div class="">
+            <form class="justify-content-center mx-sm-auto" asp-action="Login">
                 @*<input type="hidden" asp-for="Id" />*@
                 @await Html.PartialAsync("_AuthFormElements", Model)
             </form>
@@ -32,10 +31,12 @@
     </div>
 
     <div>
-        <button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("AddManager", "Manager")'">
+        <button class="btn btn-secondary text-white" onclick="location.href='@Url.Action("AddManager", "Manager")'">
             Sign up.
         </button>
-        <button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("Login", "Home")'">
+    </div>
+    <div>
+        <button class="btn btn-secondary text-white" onclick="location.href='@Url.Action("Login", "Home")'">
             Login as Customer.
         </button>
     </div>

@@ -2,19 +2,23 @@
 
 
 <div class="card" style="width: 8rem">
-    <img src="" alt="">
     <div class="card-body">
-        <h5>@Html.DisplayFor(model => model.Product.Name)</h5>
+        <h3>@Html.DisplayFor(model => model.Product.Name)</h3>
         <div class="row">
             <div class="col">
+                <h5 class="card-text text-md-center">@*Html.DisplayNameFor(model => model.Product.TypeOfProductAsString)*@Product Type</h5>
                 <p class="card-text text-md-center">@Html.DisplayFor(model => model.Product.TypeOfProductAsString)</p>
             </div>
             <div class="col">
+                <h5 class="card-text text-md-center">@Html.DisplayNameFor(model => model.Product.Price)</h5>
                 <p class="card-text text-md-center">$@Html.DisplayFor(model => model.Product.Price)</p>
             </div>
             <div class="col">
+                <h5 class="card-text text-md-center">Quantity@*Html.DisplayNameFor(model => model.ProductQuantity)*@</h5>
                 <p class="card-text text-md-center">@Html.DisplayFor(model => model.ProductQuantity)</p>
             </div>
+        </div>
+        <div class="row">
             <div class="col">
                 @*@Html.ActionLink("Add Item To Cart", "AddItemToCart", "Customer", Model)*@
                 <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action( "AddItemToCart", "Customer", Model)'">
@@ -22,6 +26,7 @@
                 </button>
             </div>
         </div>
+        
 
     </div>
 </div>

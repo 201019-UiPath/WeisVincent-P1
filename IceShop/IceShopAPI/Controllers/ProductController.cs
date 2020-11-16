@@ -4,9 +4,15 @@ using IceShopBL;
 using IceShopDB.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace IceShopAPI.Controllers
 {
+    /// <summary>
+    /// API controller that handles product information, which includes getting a list of all products, 
+    /// updating an existing product,
+    /// and adding a new product.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
@@ -21,28 +27,42 @@ namespace IceShopAPI.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Action that handles sending a list of all products in the catalogue.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("get")]
-        //[Produces("application/json")]
-        public IActionResult GetAllProducts()
+        [Produces("application/json")]
+        public async Task<IActionResult> GetAllProducts()
         {
             try
             {
-                return Ok(_productService.GetAllProducts());
+                var getProducts = Task.Factory.StartNew(() => { return _productService.GetAllProducts(); });
+
+                var products = await getProducts;
+                return Ok(products);
             } catch (Exception)
             {
                 return StatusCode(500);
             }
         }
 
+        /// <summary>
+        /// Action that handles adding a new product to the catalogue.
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
         [HttpPost("add")]
         [Consumes("application/json")]
-        public IActionResult AddNewProduct(ProductDTO product)
+        public async Task<IActionResult> AddNewProduct(ProductDTO product)
         {
             try
             {
                 var newProduct = _mapper.Map<Product>(product);
 
-                _productService.AddNewProduct(newProduct);
+                var addProduct = Task.Factory.StartNew(() => { _productService.AddNewProduct(newProduct); });
+
+                await addProduct;
                 return CreatedAtAction("AddNewProduct", product);
             } catch (Exception)
             {
@@ -50,14 +70,22 @@ namespace IceShopAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Action that handles updating a product entry in the catalogue.
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
         [HttpPut("update")]
         [Consumes("application/json")]
-        public IActionResult UpdateProductEntry(Product product)
+        public async Task<IActionResult> UpdateProductEntry(ProductDTO product)
         {
             try
             {
+                var updatedProduct = _mapper.Map<Product>(product);
                 // TODO: Figure out if updating works statelessly.
-                _productService.UpdateProductEntry(product);
+                var updateProduct = Task.Factory.StartNew(() => { _productService.UpdateProductEntry(updatedProduct); });
+                await updateProduct;
+
                 return AcceptedAtAction("UpdateProductEntry", product);
             } catch (Exception)
             {

@@ -4,14 +4,18 @@
 <div class="card" style="width: 8rem">
     <img src="" alt="">
     <div class="card-body">
-        <h5>@Html.DisplayFor(model => model.Name)</h5>
+        <h3>@Html.DisplayFor(model => model.Name)</h3>
         <div class="row">
             <div class="col">
+                <h5 class="card-text text-md-center">@*Html.DisplayNameFor(model => model.Product.TypeOfProductAsString)*@Product Type</h5>
                 <p class="card-text text-md-center">@Html.DisplayFor(model => model.TypeOfProductAsString)</p>
             </div>
             <div class="col">
+                <h5 class="card-text text-md-center">@Html.DisplayNameFor(model => model.Price)</h5>
                 <p class="card-text text-md-center">$@Html.DisplayFor(model => model.Price)</p>
             </div>
+        </div>
+        <div class="row">
             <div class="col">
                 @*@Html.ActionLink("Remove item from Cart", "RemoveItemFromCart", "Customer", Model)*@
                 <button class="btn btn-primary text-white float-none" onclick="location.href='@Url.Action("AddNewProductToStock", "Manager", new { productId= Model.Id })'">

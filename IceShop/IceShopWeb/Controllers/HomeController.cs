@@ -12,7 +12,6 @@ namespace IceShopWeb.Controllers
     
     public class HomeController : Controller
     {
-        const string url = "https://localhost:5001/api/";
 
         private readonly ILogger<HomeController> _logger;
 

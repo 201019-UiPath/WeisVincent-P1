@@ -11,8 +11,6 @@
 <div class="text-center">
 
     <h1>Products in Order</h1>
-
-    
     <table class="table">
         <thead>
             <tr>
@@ -20,7 +18,8 @@
                     @Html.DisplayNameFor(model => model.First().Product.Name)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.First().Product.TypeOfProductAsString)
+                    Product Type
+                    @*Html.DisplayNameFor(model => model.First().Product.TypeOfProductAsString)*@
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.First().Product.Price)

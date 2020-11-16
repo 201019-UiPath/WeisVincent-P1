@@ -10,18 +10,22 @@
     <h1>Order History</h1>
 
     <h4>Sort orders...</h4>
-    <button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("GetOrderHistory", "Customer",new { sortBy = 0 })'">
-        By Date Placed, descending.
-    </button>
-    <button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("GetOrderHistory", "Customer",new { sortBy = 1 })'">
-        By Date Placed, ascending.
-    </button>
-    <button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("GetOrderHistory", "Customer",new { sortBy = 2 })'">
-        By Price, descending.
-    </button>
-    <button class="btn btn-primary text-white float-left" onclick="location.href='@Url.Action("GetOrderHistory", "Customer",new { sortBy = 3 })'">
-        By Price, ascending.
-    </button>
+    <div>
+        <button class="btn btn-primary text-white" onclick="location.href='@Url.Action("GetOrderHistory", "Customer",new { sortBy = 0 })'">
+            By Date Placed, descending.
+        </button>
+        <button class="btn btn-primary text-white" onclick="location.href='@Url.Action("GetOrderHistory", "Customer",new { sortBy = 1 })'">
+            By Date Placed, ascending.
+        </button>
+    </div>
+    <div>
+        <button class="btn btn-primary text-white" onclick="location.href='@Url.Action("GetOrderHistory", "Customer",new { sortBy = 2 })'">
+            By Price, descending.
+        </button>
+        <button class="btn btn-primary text-white" onclick="location.href='@Url.Action("GetOrderHistory", "Customer",new { sortBy = 3 })'">
+            By Price, ascending.
+        </button>
+    </div>
     @*@Html.ActionLink("By Date Placed, descending.", "GetOrderHistory", "Customer", new { sortBy = 0 })
     @Html.ActionLink("By Date Placed, ascending.", "GetOrderHistory", "Customer", new { sortBy = 1 })
     @Html.ActionLink("By Price, descending.", "GetOrderHistory", "Customer", new { sortBy = 2 })
@@ -40,7 +44,7 @@
                     @Html.DisplayNameFor(model => model.First().Address)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.First().TimeOrderWasPlaced)
+                    @*Html.DisplayNameFor(model => model.First().TimeOrderWasPlaced)*@Date Placed
                 </th>
                 <th>
 

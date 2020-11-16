@@ -3,6 +3,10 @@ for details on configuring this project to bundle and minify static web assets. 
 
 body{
     background-color: #6fe8f0;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+.navbar {
+    background-color:lightskyblue;
 }
 
 a.navbar-brand {

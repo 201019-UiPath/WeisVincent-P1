@@ -19,9 +19,9 @@ namespace IceShopDB.Repos.DBRepos
         }
 
         #region Customer Methods
-        public void AddCustomerAsync(Customer customer)
+        public async void AddCustomerAsync(Customer customer)
         {
-            context.Customers.AddAsync(customer);
+            await context.Customers.AddAsync(customer);
         }
 
         public void AddCustomer(Customer customer)
