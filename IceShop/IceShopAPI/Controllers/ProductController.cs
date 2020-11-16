@@ -58,11 +58,16 @@ namespace IceShopAPI.Controllers
         {
             try
             {
-                var newProduct = _mapper.Map<Product>(product);
+                var mapProduct = Task.Factory.StartNew(() =>
+               {
+                   var newProduct = _mapper.Map<Product>(product);
+                   return newProduct;
+               });
 
-                var addProduct = Task.Factory.StartNew(() => { _productService.AddNewProduct(newProduct); });
+                var newProductToAdd = await mapProduct;
+                
+                _productService.AddNewProduct(newProductToAdd);
 
-                await addProduct;
                 return CreatedAtAction("AddNewProduct", product);
             } catch (Exception)
             {
@@ -83,8 +88,7 @@ namespace IceShopAPI.Controllers
             {
                 var updatedProduct = _mapper.Map<Product>(product);
                 // TODO: Figure out if updating works statelessly.
-                var updateProduct = Task.Factory.StartNew(() => { _productService.UpdateProductEntry(updatedProduct); });
-                await updateProduct;
+                _productService.UpdateProductEntry(updatedProduct);
 
                 return AcceptedAtAction("UpdateProductEntry", product);
             } catch (Exception)

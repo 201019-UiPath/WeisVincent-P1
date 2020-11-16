@@ -71,8 +71,7 @@ namespace IceShopAPI.Controllers
             {
                 var order = _mapper.Map<Order>(orderDTO);
 
-                var addOrder = Task.Factory.StartNew( () => _orderService.AddOrderToRepo(order) );
-                await addOrder;
+                _orderService.AddOrderToRepo(order);
 
                 var fetchAddedOrder = Task.Factory.StartNew(() => { return _orderService.GetOrderByDateTime(order.TimeOrderWasPlaced); });
                 var fetchedOrder = await fetchAddedOrder;
@@ -97,9 +96,10 @@ namespace IceShopAPI.Controllers
             try
             {
                 var orderLineItem = _mapper.Map<OrderLineItem>(oli);
-                var addOrderLineItem = Task.Factory.StartNew(() => _orderService.AddOrderLineItemToRepo(orderLineItem) );
 
-                await addOrderLineItem;
+
+                _orderService.AddOrderLineItemToRepo(orderLineItem);
+
 
                 return CreatedAtAction("AddOrderLineItem", orderLineItem);
             }
@@ -134,14 +134,11 @@ namespace IceShopAPI.Controllers
 
                 var orderLineItems = await Task.WhenAll(mapOrderLineItems);
 
-                var addOrderLineItems = new List<Task>();
                 foreach(OrderLineItem oli in orderLineItems)
                 {
-                    var addOLITask = Task.Factory.StartNew(()=> _orderService.AddOrderLineItemToRepo(oli));
-                    addOrderLineItems.Add(addOLITask);
+                    _orderService.AddOrderLineItemToRepo(oli);
                 }
 
-                await Task.WhenAll(addOrderLineItems);
 
                 return CreatedAtAction("AddOrderLineItems", olis);
             }

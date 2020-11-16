@@ -25,7 +25,7 @@ namespace IceShopWeb.Models
 
         [Required]
         [DisplayName("Password")]
-        [DataType(DataType.Password, ErrorMessage = "A user password needs 8 word characters.")]
+        [DataType(DataType.Password, ErrorMessage = "A user password must be a password.")]
         public string Password { get; set; }
     }
 }

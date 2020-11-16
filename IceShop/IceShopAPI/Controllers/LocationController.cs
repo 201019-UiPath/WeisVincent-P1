@@ -146,8 +146,7 @@ namespace IceShopAPI.Controllers
             try
             {
                 var lineItem = _mapper.Map<InventoryLineItem>(lineItemDTO);
-                var addLineItem = Task.Factory.StartNew( () => _locationService.AddInventoryLineItemInRepo(lineItem) );
-                await addLineItem;
+                _locationService.AddInventoryLineItemInRepo(lineItem);
                 return CreatedAtAction("AddLineItemToStock", lineItem);
             }
             catch (Exception)
@@ -201,9 +200,7 @@ namespace IceShopAPI.Controllers
             try
             {
                 var lineItem = _mapper.Map<InventoryLineItem>(lineItemDTO);
-
-                var removeLineItem = Task.Factory.StartNew(() => _locationService.RemoveInventoryLineItemInRepo(lineItem));
-                await removeLineItem;
+                _locationService.RemoveInventoryLineItemInRepo(lineItem);
                 
                 return AcceptedAtAction("RemoveLineItemInStock", lineItemDTO);
             }

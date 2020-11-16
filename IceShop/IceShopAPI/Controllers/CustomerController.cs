@@ -38,14 +38,16 @@ namespace IceShopAPI.Controllers
         {
             try
             {
-                var addCustomerTask = Task.Factory.StartNew(() =>
+                var mapCustomerTask = Task.Factory.StartNew(() =>
                 {
                     var newCustomer = _mapper.Map<Customer>(customer);
-                    _customerService.AddCustomerToRepo(newCustomer);
-                    return CreatedAtAction("AddCustomer", customer);
+                    return newCustomer;
                 });
 
-                return await addCustomerTask;
+                var newCustomerToAdd = await mapCustomerTask;
+
+                _customerService.AddCustomerToRepo(newCustomerToAdd);
+                return CreatedAtAction("AddCustomer", customer);
                 
             }
             catch (Exception)
@@ -145,13 +147,18 @@ namespace IceShopAPI.Controllers
         [HttpPut("update")]
         [Consumes("application/json")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdateCustomer(Customer customer)
+        public async Task<IActionResult> UpdateCustomer(CustomerDTO customer)
         {
             try
             {
                 // TODO: Figure out if updating works statelessly.
-                Task updateCustomer = Task.Factory.StartNew(() => _customerService.UpdateCustomerEntry(customer) );
-                await updateCustomer;
+                var mapCustomerTask = Task.Factory.StartNew(() =>
+                {
+                    var newCustomer = _mapper.Map<Customer>(customer);
+                    return newCustomer;
+                });
+                var customerToUpdate = await mapCustomerTask;
+                _customerService.UpdateCustomerEntry(customerToUpdate);
 
                 return AcceptedAtAction("UpdateProductEntry", customer);
             }

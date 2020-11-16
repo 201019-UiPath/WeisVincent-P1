@@ -227,7 +227,7 @@ namespace IceShopWeb.Controllers
                 var message = e.Message;
                 Console.WriteLine(message);
             }
-            return RedirectToAction("ManageLocationStock", new { locationId = ManagedLocation.Id });
+            return RedirectToAction("ManageLocationStock", "Manager", new { locationId = ManagedLocation.Id });
         }
 
 
